@@ -592,99 +592,102 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				Runnable runnable = new Runnable() {
 					@SuppressWarnings({ "deprecation" })
 					public void run() {
-						
-						hien_danhSach_lenh = !hien_danhSach_lenh;
-						
-						if (hien_danhSach_lenh == false) {
-							if (threadHD.isAlive()) {
-								threadHD.stop();
+					
+						try {
+							hien_danhSach_lenh = !hien_danhSach_lenh;
+							
+							if (hien_danhSach_lenh == false) {
+								if (threadHD.isAlive()) {
+									threadHD.stop();
+								}
 							}
-						}
 
-						if (hien_danhSach_lenh) {
-							showlist = false;
-							tglbtnShowList.setSelected(false);
-							while (hien_danhSach_lenh) {
-								List<WebElement> rowsNumber = driverVPS
-										.findElements(By.xpath("//*[@id=\"op-order-status\"]/tr"));
-								int countme = rowsNumber.size();
+							if (hien_danhSach_lenh) {
+								showlist = false;
+								tglbtnShowList.setSelected(false);
+								while (hien_danhSach_lenh) {
+									List<WebElement> rowsNumber = driverVPS
+											.findElements(By.xpath("//*[@id=\"op-order-status\"]/tr"));
+									countme = rowsNumber.size();
 
-								if (countme > 0) {
-									final Vector total_recordHistory = new Vector();
-									Vector newRecordHistory = null;
+									if (countme > 0) {
+										final Vector total_recordHistory = new Vector();
+										Vector newRecordHistory = null;
 
-									if (rowsNumber.size() > 6) {
-										countme = 6;
-									}
-									for (int k = 1; k < countme + 1; k++) {
+										if (rowsNumber.size() > 3) {
+											countme =3;
+										}
+										for (int k = 1; k < countme + 1; k++) {
 
-										newRecordHistory = new Vector();
-										time = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[1]"));
-										stype = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[4]"));
+											newRecordHistory = new Vector();
+											time = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[1]"));
+											stype = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[4]"));
 
-										Igiadat = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[5]"));
+											Igiadat = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[5]"));
 
-										// khop
+											// khop
 
-										hdkhop = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[7]")); // hd
-																												// khop
-										hdchuaK = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[8]")); // hd
-																												// chua
-																												// khop
-										status = driverVPS.findElement(
-												By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[9]"));
+											hdkhop = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[7]")); // hd
+																													// khop
+											hdchuaK = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[8]")); // hd
+																													// chua
+																													// khop
+											status = driverVPS.findElement(
+													By.xpath("//*[@id=\"op-order-status\"]/tr[" + k + "]/td[9]"));
 
-										newRecordHistory.addElement(hdkhop.getText());
-										newRecordHistory.addElement(stype.getText());
-										newRecordHistory.addElement(status.getText());
-										newRecordHistory.addElement(Igiadat.getText());
-										newRecordHistory.addElement(hdchuaK.getText());
-										newRecordHistory.addElement(time.getText());
-										total_recordHistory.addElement(newRecordHistory);
-										frmRubbyMoney.setTitle("Up history   " + total_recordHistory.get(0));
-									}
+											newRecordHistory.addElement(hdkhop.getText());
+											newRecordHistory.addElement(stype.getText());
+											newRecordHistory.addElement(status.getText());
+											newRecordHistory.addElement(Igiadat.getText());
+											newRecordHistory.addElement(hdchuaK.getText());
+											newRecordHistory.addElement(time.getText());
+											total_recordHistory.addElement(newRecordHistory);
+											frmRubbyMoney.setTitle("Up history   " + total_recordHistory.get(0)+"rows :"+countme);
+										}
 
-									try {
-										final DefaultTableModel tableModel = (DefaultTableModel) tableHistory.getModel();
-										SwingUtilities.invokeLater(new Runnable() {
-											public void run() {
-												tableHistory.setModel(
-														new DefaultTableModel(total_recordHistory, colunm_HeadHistory));
-												tableModel.fireTableDataChanged();
-												frmRubbyMoney.setTitle("Up history..." + total_recordHistory.get(0));
+										
+											final DefaultTableModel tableModel = (DefaultTableModel) tableHistory.getModel();
+											SwingUtilities.invokeLater(new Runnable() {
+												public void run() {
+													tableHistory.setModel(
+															new DefaultTableModel(total_recordHistory, colunm_HeadHistory));
+													tableModel.fireTableDataChanged();
+													frmRubbyMoney.setTitle("Up history..." + total_recordHistory.get(0)+"rows :"+ countme);
+
+												}
+											});
+
+											// ------------------------- tableHistory
+
+											if (initHD) {
+												WebElement element = driverVPS
+														.findElement(By.xpath("//*[@id=\"footer_filter_panel\"]/button"));
+												js.executeScript("arguments[0].click();", element);
+												initHD = !initHD;
+											}
+
+											if (time.getText() != "") {
+
+												tableHistory.setEnabled(false);
+												tableHistory.setForeground(Color.BLACK);
+												tableHistory.setBackground(new Color(242, 245, 249));
+
+												tableHistory.setDefaultRenderer(Object.class, new StockPSRenderer());
 
 											}
-										});
 
-										// ------------------------- tableHistory
-
-										if (initHD) {
-											WebElement element = driverVPS
-													.findElement(By.xpath("//*[@id=\"footer_filter_panel\"]/button"));
-											js.executeScript("arguments[0].click();", element);
-											initHD = !initHD;
-										}
-
-										if (time.getText() != "") {
-
-											tableHistory.setEnabled(false);
-											tableHistory.setForeground(Color.BLACK);
-											tableHistory.setBackground(new Color(242, 245, 249));
-
-											tableHistory.setDefaultRenderer(Object.class, new StockPSRenderer());
-
-										}
-
-									} catch (Exception eHistory) {
-										System.out.println("bi loi" + eHistory.getMessage());
+										
 									}
 								}
 							}
+						} catch (Exception eHistory) {
+							// TODO Auto-generated catch block
+							System.out.println("bi loi" + eHistory.getMessage());
 						}
 					}
 				};
@@ -793,6 +796,12 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnMuaK.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnMuaK.setForeground(new Color(0, 100, 0));
+		
+		JPopupMenu popupMenu_1 = new JPopupMenu();
+		addPopup(btnMuaK, popupMenu_1);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("ATC");
+		popupMenu_1.add(mntmNewMenuItem);
 
 		final JButton btnBanK = new JButton("");
 		btnBanK.addActionListener(new ActionListener() {
@@ -893,6 +902,12 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnBanK.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnBanK.setForeground(new Color(255, 0, 0));
+		
+		JPopupMenu popupMenu_2 = new JPopupMenu();
+		addPopup(btnBanK, popupMenu_2);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("ATC");
+		popupMenu_2.add(mntmNewMenuItem_1);
 		btnMAK_MUA.setBounds(146, 70, 70, 23);
 		panel.add(btnMAK_MUA);
 		btnMAK_MUA.addMouseListener(new MouseAdapter() {
