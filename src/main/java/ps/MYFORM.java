@@ -2302,8 +2302,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnBanK_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnBanK_1.setBackground(Color.WHITE);
 		Refresh.addActionListener(new ActionListener() {
+			@SuppressWarnings("removal")
 			public void actionPerformed(ActionEvent e) {
-
+				hien_danhSach_lenh=true;
+				tglbtnShowHistory.doClick();
 				driverVPS.navigate().refresh();
 
 				js = (JavascriptExecutor) driverVPS;
