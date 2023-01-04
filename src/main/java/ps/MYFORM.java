@@ -599,6 +599,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						try {
 							hien_danhSach_lenh = !hien_danhSach_lenh;
 							
+							if(hien_danhSach_lenh) {
+								tglbtnShowHistory.setSelected(true);
+								tglbtnShowHistory.setText("PS ON");
+							}else {
+								tglbtnShowHistory.setSelected(false);
+								tglbtnShowHistory.setText("PS OFF");
+							}
+
 							if (hien_danhSach_lenh == false) {
 								if (threadHD.isAlive()) {
 									threadHD.stop();
@@ -2924,11 +2932,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								
 								frmRubbyMoney.setTitle("Finish config ....");
 								
-								WebElement showhd = driverVPS
-										.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
-								js.executeScript("arguments[0].click();", showhd);
-						
-								frmRubbyMoney.setTitle(" click show history ...");
+								
 							} catch (NoSuchElementException e1) {
 
 							} catch (IllegalThreadStateException e) {
@@ -2944,7 +2948,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 							eDriver.printStackTrace();
 						}
-
+						WebElement showhd = driverVPS
+								.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
+						js.executeScript("arguments[0].click();", showhd);
+				
+						frmRubbyMoney.setTitle(" click show history ...");
 						
 						frmRubbyMoney.setTitle(title + " - for ....");
 						// js.executeScript("document.body.style.zoom = '30%';");
