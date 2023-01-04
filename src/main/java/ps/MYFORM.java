@@ -94,6 +94,7 @@ import java.util.Map;
 
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import javax.swing.JPopupMenu;
 import javax.swing.ButtonGroup;
@@ -122,12 +123,13 @@ import org.openqa.selenium.NoSuchElementException;
 
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
-
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 //import com.google.common.base.Function;
 import com.ibm.icu.text.DateFormat;
@@ -246,6 +248,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 //	FirefoxDriver driver;
 	FirefoxDriver driverDownFuture;
 	FirefoxDriver driverRagon;
+	List<WebElement> rowsNumber;
 	Boolean AutoMK = false, hien_danhSach_lenh = false, layhdtest = false, retryNeeded, retryNeeded1 = false,
 			check = true, autock = false, showchart = true;
 	Boolean setGiakhop = false, mua_break_count = false, ban_break_count = false;
@@ -271,7 +274,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	float GIA_AUTO;
 	float GIA_AUTO_Compare;
 	// ----------------------
-	private JFrame frmRubbyMoney;
+	private static JFrame frmRubbyMoney;
 
 	boolean AutoMb = false, flagMua_break = false, flagBan_break = false;
 	boolean RL = false;
@@ -606,7 +609,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								showlist = false;
 								tglbtnShowList.setSelected(false);
 								while (hien_danhSach_lenh) {
-									List<WebElement> rowsNumber = driverVPS
+								    rowsNumber = driverVPS
 											.findElements(By.xpath("//*[@id=\"op-order-status\"]/tr"));
 									countme = rowsNumber.size();
 
@@ -647,7 +650,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											newRecordHistory.addElement(hdchuaK.getText());
 											newRecordHistory.addElement(time.getText());
 											total_recordHistory.addElement(newRecordHistory);
-											frmRubbyMoney.setTitle("Up history   " + total_recordHistory.get(0)+"rows :"+countme);
+											frmRubbyMoney.setTitle("history   " + total_recordHistory.get(0)+", rows : "+rowsNumber.size());
 										}
 
 										
@@ -657,7 +660,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 													tableHistory.setModel(
 															new DefaultTableModel(total_recordHistory, colunm_HeadHistory));
 													tableModel.fireTableDataChanged();
-													frmRubbyMoney.setTitle("Up history..." + total_recordHistory.get(0)+"rows :"+ countme);
+													frmRubbyMoney.setTitle("history..." + total_recordHistory.get(0)+", rows : "+ rowsNumber.size());
 
 												}
 											});
@@ -687,7 +690,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							}
 						} catch (Exception eHistory) {
 							// TODO Auto-generated catch block
-							System.out.println("bi loi" + eHistory.getMessage());
+							frmRubbyMoney.setTitle("history..." + "bi loi" + eHistory.getMessage());
+
+						
 						}
 					}
 				};
@@ -2296,14 +2301,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnBanK_1.setForeground(Color.RED);
 		btnBanK_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnBanK_1.setBackground(Color.WHITE);
-		Refresh.setBounds(130, 229, 16, 17);
-		panel.add(Refresh);
-		Refresh.setBackground(new Color(144, 238, 144));
-		Refresh.setToolTipText("Refresh");
+		Refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		Refresh.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
 				driverVPS.navigate().refresh();
 
 				js = (JavascriptExecutor) driverVPS;
@@ -2312,7 +2312,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				BanButton = driverVPS.findElement(By.xpath(Banxpath));
 
 				try {
+					thread.suspend();
 					js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
+					js.executeScript("document.body.style.zoom = '80%';");
+			/*
 					if (textGiaKhop.getText() != "") {
 						if (tontaiHD == 0) { // SHORT
 							js.executeScript("document.getElementById('right_price').value="
@@ -2344,12 +2347,26 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						js.executeScript("arguments[0].click();", save);
 
 					}
-
+					*/
+					frmRubbyMoney.setTitle(" check page loaded,");
+					untilPageLoadComplete(driverVPS,20) ;
+					frmRubbyMoney.setTitle(frmRubbyMoney.getTitle()+" click show history ...");
+					WebElement showhd = driverVPS
+							.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
+					js.executeScript("arguments[0].click();", showhd);
+					thread.resume();
 				} catch (NoSuchElementException e1) {
 				}
 
+			
 			}
 		});
+		Refresh.setBounds(130, 229, 16, 17);
+		panel.add(Refresh);
+		Refresh.setBackground(new Color(144, 238, 144));
+		Refresh.setToolTipText("Refresh");
+
+		
 		Refresh.setFont(new Font("Tahoma", Font.PLAIN, 6));
 
 		JLabel lblDong_1_2_1 = new JLabel("refresh");
@@ -2806,7 +2823,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							driverVPS.findElement(By.xpath("//*[@id=\"form-login\"]/div[2]/div[7]/button[1]")).click();
 							js = (JavascriptExecutor) driverVPS;
 							frmRubbyMoney.setTitle(" pass login input...");
-
+							untilPageLoadComplete(driverVPS,20) ;
+							frmRubbyMoney.setTitle(" page loaded ...");
 							// -----------
 							Thread.sleep(200);
 							do {
@@ -2901,12 +2919,22 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 								WebElement save = modal_price.findElement(By.xpath("//*[@id=\"account_save_pin\"]"));
 								js.executeScript("arguments[0].click();", save);
+								
+								frmRubbyMoney.setTitle("Finish config ....");
+								
+								WebElement showhd = driverVPS
+										.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
+								js.executeScript("arguments[0].click();", showhd);
+						
+								frmRubbyMoney.setTitle(" click show history ...");
 							} catch (NoSuchElementException e1) {
 
-							}
+							} catch (IllegalThreadStateException e) {
+								frmRubbyMoney.setTitle("IllegalThreadStateException");
+										 }
 							// -----------
 
-							frmRubbyMoney.setTitle("Finish config ....");
+							
 							// driver.get(baseUrl);
 
 						} catch (Exception eDriver) {
@@ -2915,11 +2943,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							eDriver.printStackTrace();
 						}
 
-						frmRubbyMoney.setTitle(" click show history ...");
-						WebElement showhd = driverVPS
-								.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
-						js.executeScript("arguments[0].click();", showhd);
-
+						
 						frmRubbyMoney.setTitle(title + " - for ....");
 						// js.executeScript("document.body.style.zoom = '30%';");
 						// -------------------------------------------
@@ -2973,40 +2997,95 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											iconn.connect();
 											Iconn.setForeground(Color.GREEN);
 											Iconn.setText("Ic");
+											
 
 										} catch (Exception e) {
 											Iconn.setForeground(Color.RED);
 											Iconn.setText("Id");
 
 										}
+										
+
+										try {
+											connect = driverVPS
+													.findElement(By.xpath("//*[@id=\"status-connect\"]/span/span"));
+											if (connect.getText().equals("Connected")) {
+
+												conn.setForeground(Color.GREEN);
+											} else {
+												conn.setForeground(Color.RED);
+
+											}
+											conn.setText(connect.getText());
+										} catch (NoSuchElementException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
 										// -----------
 
-										connect = driverVPS
-												.findElement(By.xpath("//*[@id=\"status-connect\"]/span/span"));
-										if (connect.getText().equals("Connected")) {
-
-											conn.setForeground(Color.GREEN);
-										} else {
-											conn.setForeground(Color.RED);
-
-										}
-										conn.setText(connect.getText());
+										
 
 										try {
 											WebElement info = null;
-
+										
 											WebElement Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
-
+										
+											WebElement Mua_1806 = driverVPS.findElement(By.id(HD));
+											WebElement Ban_1806 = driverVPS.findElement(By.id(HD1));
+											
+												
+											String Mua=Mua_1806.getText();String Ban=Ban_1806.getText();
+											String Khop=Gia_khop.getText();
+											
+											if(Mua.isEmpty()&&!Ban.isEmpty()) {
+												Mua=Ban;
+												System.out.println("go here 2");
+											}
+											if(Ban.isEmpty()&&!Mua.isEmpty()) {
+												Ban=Mua;
+											}
+											/*
+											System.out.println("Gia_khop : "+Gia_khop.getText());
+											System.out.println("-----");
+											System.out.println("Mua_1806 : "+Mua);
+											System.out.println("-----");
+											System.out.println("Ban_1806 : "+Ban);
+											*/
+										
+											GIA_KHOP = (Float.valueOf(Float.parseFloat(
+													(String) Khop.replaceAll(",", ""))))
+															.floatValue();
+											if (!dongbang) {
+											textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
+											}
 											try {
-												if (!Gia_khop.getText().isEmpty()) {
-													GIA_KHOP = (Float.valueOf(Float.parseFloat(
-															(String) Gia_khop.getText().replaceAll(",", ""))))
+												if ((!Mua.equals("ATO"))
+														&& (!Mua.equals("ATC"))) {
+													
+													GIA_BAN_REAL = (Float.valueOf(Float.parseFloat(
+															(String) Mua.replaceAll(",", ""))))
 																	.floatValue();
+													
+													GIA_MUA_REAL = (Float.valueOf(Float.parseFloat(
+															(String) Ban.replaceAll(",", ""))))
+																	.floatValue();
+													if (!dongbang) {
+														
+														btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
+														btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
+													
+													}
+
+
 												}
-											} catch (NumberFormatException e2) {
+											} catch (NoSuchElementException e) {
+												frmRubbyMoney.setTitle("NoSuchElementException 3031");
+											} 
+											
+											catch (NumberFormatException e2) {
 
-												frmRubbyMoney.setTitle("Khong lay duoc gia khop");
-
+												frmRubbyMoney.setTitle("NumberFormatException 3036");
+											
 											}
 
 											try {
@@ -3052,13 +3131,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 												e.printStackTrace();
 											}
 
-											if (!dongbang) {
-												btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
-												btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
-												textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
-
-											}
-
+											
 											if (hien_danhSach_lenh) {
 												// js.executeScript(
 												// "document.getElementById('footerPanel').style.display='block';");
@@ -3371,43 +3444,45 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 												}
 											}
 
-											try {
+											/*
+											 * try {
+											 * 
+											 * Mua_1806 = driverVPS.findElement(By.id(HD)); Ban_1806 =
+											 * driverVPS.findElement(By.id(HD1)); Gia_khop =
+											 * driverVPS.findElement(By.id(HDCLOSE));
+											 * System.out.println("go here 1....khop "+Gia_khop.getText());
+											 * System.out.println("go here 1....Mua_1806 "+Mua_1806.getText());
+											 * System.out.println("go here 1....Ban_1806 "+Ban_1806.getText()); if
+											 * ((!Gia_khop.getText().isEmpty() && !Mua_1806.getText().isEmpty() //
+											 * isBlank && !Ban_1806.getText().isEmpty()) &&
+											 * (!Mua_1806.getText().equals("ATO")) &&
+											 * (!Mua_1806.getText().equals("ATC"))) { GIA_KHOP =
+											 * (Float.valueOf(Float.parseFloat( (String)
+											 * Gia_khop.getText().replaceAll(",", "")))) .floatValue();
+											 * 
+											 * GIA_BAN_REAL = (Float.valueOf(Float.parseFloat( (String)
+											 * Mua_1806.getText().replaceAll(",", "")))) .floatValue(); GIA_MUA_REAL =
+											 * (Float.valueOf(Float.parseFloat( (String)
+											 * Ban_1806.getText().replaceAll(",", "")))) .floatValue();
+											 * 
+											 * }
+											 * 
+											 * } catch (NoSuchElementException eSuchElement) {
+											 * frmRubbyMoney.setTitle(eSuchElement.toString());
+											 * eSuchElement.printStackTrace(); }
+											 */
 
-												Mua_1806 = driverVPS.findElement(By.id(HD));
-												Ban_1806 = driverVPS.findElement(By.id(HD1));
-												Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
-												if ((!Gia_khop.getText().isEmpty() && !Mua_1806.getText().isEmpty() // isBlank
-														&& !Ban_1806.getText().isEmpty())
-														&& (!Mua_1806.getText().equals("ATO"))
-														&& (!Mua_1806.getText().equals("ATC"))) {
-													GIA_KHOP = (Float.valueOf(Float.parseFloat(
-															(String) Gia_khop.getText().replaceAll(",", ""))))
-																	.floatValue();
-
-													GIA_BAN_REAL = (Float.valueOf(Float.parseFloat(
-															(String) Mua_1806.getText().replaceAll(",", ""))))
-																	.floatValue();
-													GIA_MUA_REAL = (Float.valueOf(Float.parseFloat(
-															(String) Ban_1806.getText().replaceAll(",", ""))))
-																	.floatValue();
-
-												}
-
-											} catch (NumberFormatException e) {
-
-												e.printStackTrace();
-											}
-
-										} catch (StaleElementReferenceException e1) {
-											System.out.println("excepttion ...");
+										} catch (StaleElementReferenceException eStaleElementReferenceException) {
+											System.out.println("StaleElementReferenceException ...");
+											
 											retryNeeded = true;
 
 											break;
-										} catch (NoSuchElementException e) {
-											driverVPS.switchTo().parentFrame();
-											driverVPS.switchTo().defaultContent();
-											e.printStackTrace();
+										} catch (NumberFormatException eNumberFormatException) {
+											retryNeeded = true;
+										
 										}
+									
 									} while (retryNeeded);
 
 									if (!dn) {
@@ -4404,106 +4479,114 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		}
 
 		if (e.getKeyCode() == NativeKeyEvent.VC_CAPS_LOCK && enableKeyBoard) {
-
+			WebElement element = null;
+			WebElement pic = null;
+			WebElement cRight = null;
+			WebElement MRight = null;
 			showchart = !showchart;
 			// CHECK , UNCHECK CAP CAP CAP
-			if (showtradeview) {
+			
+			try {
+				if (showtradeview) {
 
-				JavascriptExecutor js = (JavascriptExecutor) driverStock;
+					JavascriptExecutor js = (JavascriptExecutor) driverStock;
 
-				WebElement element = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
-				WebElement pic = driverStock.findElement(By.xpath("//*[@id=\"pic\"]"));
-				WebElement cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
-				WebElement MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
+					
+					
+						element = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
+						pic = driverStock.findElement(By.xpath("//*[@id=\"pic\"]"));
+						cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
+						MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
+				
 
-				// panel_logo.setVisible(!showchart);
+					// panel_logo.setVisible(!showchart);
 
-				if (showchart) {
-					if (typeChart == 1) {
-						frmRubbyMoney.setTitle("Rubby money");
+					if (showchart) {
+						if (typeChart == 1) {
+							frmRubbyMoney.setTitle("Rubby money");
 
-						frmRubbyMoney.setBounds(100, 100, 484, 288);
-						frmRubbyMoney.setLocation(550, 350);
-						SHD.setBounds(303, 95, 30, 20);
-						txtAuto.setBounds(303, 119, 30, 20);
+							frmRubbyMoney.setBounds(100, 100, 484, 288);
+							frmRubbyMoney.setLocation(550, 350);
+							SHD.setBounds(303, 95, 30, 20);
+							txtAuto.setBounds(303, 119, 30, 20);
 
-						lblSM.setLocation(394, 233);
+							lblSM.setLocation(394, 233);
+						} else {
+							frmRubbyMoney.setTitle("Rubby money");
+
+							frmRubbyMoney.setBounds(100, 250, 484, 288);
+							frmRubbyMoney.setLocation(700, 250);
+							SHD.setBounds(303, 95, 30, 20);
+							txtAuto.setBounds(303, 119, 30, 20);
+
+							lblSM.setLocation(394, 233);
+						}
+					} else {
+						System.out.println("1");
+						frmRubbyMoney.setTitle("Java loading ....");
+						frmRubbyMoney.setBounds(100, 100, 484, 130);
+						frmRubbyMoney.setLocation(900, 600);
+						SHD.setBounds(303, 42, 30, 20);
+						txtAuto.setBounds(303, 68, 30, 20);
+						lblSM.setLocation(405, 55);
+						// panel.add(lblSM);
+						driverStock.findElement(By.xpath("/html/body/div[2]/input")).click();
+
+					}
+
+					if (showchart) {
+						if (typeChart == 1) {
+							js.executeScript("arguments[0].style.visibility='visible'", element);
+							js.executeScript("arguments[0].style.display='none'", pic);
+							js.executeScript("arguments[0].scrollIntoView();", element);
+						}
+
+						if (typeChart == 2) {
+							js.executeScript("arguments[0].style.visibility='visible'", element);
+							js.executeScript("arguments[0].style.display='none'", pic);
+							js.executeScript("arguments[0].scrollIntoView();", cRight);
+						}
+						if (typeChart == 3) {
+							js.executeScript("arguments[0].style.visibility='visible'", element);
+							js.executeScript("arguments[0].style.display='none'", pic);
+							js.executeScript("arguments[0].scrollIntoView();", MRight);
+						}
+						btnshow.setText(showchart ? "hide" : "show");
+
+					} else {
+						js.executeScript("arguments[0].style.visibility='hidden'", element);
+						js.executeScript("arguments[0].style.display='block'", pic);
+						js.executeScript("arguments[0].scrollIntoView();", pic);
+					}
+				} else {
+					if (!showchart) {
+						System.out.println("2");
+						frmRubbyMoney.setTitle("Java loading ....");
+						frmRubbyMoney.setBounds(100, 100, 484, 130);
+						frmRubbyMoney.setLocation(900, 600);
+						SHD.setBounds(303, 42, 30, 20);
+						txtAuto.setBounds(303, 68, 30, 20);
+						lblSM.setLocation(405, 55);
+
 					} else {
 						frmRubbyMoney.setTitle("Rubby money");
 
 						frmRubbyMoney.setBounds(100, 250, 484, 288);
-						frmRubbyMoney.setLocation(700, 250);
+						frmRubbyMoney.setLocation(870, 450);
 						SHD.setBounds(303, 95, 30, 20);
 						txtAuto.setBounds(303, 119, 30, 20);
 
 						lblSM.setLocation(394, 233);
 					}
-				} else {
-					System.out.println("1");
-					frmRubbyMoney.setTitle("Java loading ....");
-					frmRubbyMoney.setBounds(100, 100, 484, 130);
-					frmRubbyMoney.setLocation(900, 600);
-					SHD.setBounds(303, 42, 30, 20);
-					txtAuto.setBounds(303, 68, 30, 20);
-					lblSM.setLocation(405, 55);
-					// panel.add(lblSM);
-					driverStock.findElement(By.xpath("/html/body/div[2]/input")).click();
-
+					
+					
 				}
-
-				if (showchart) {
-					if (typeChart == 1) {
-						js.executeScript("arguments[0].style.visibility='visible'", element);
-						js.executeScript("arguments[0].style.display='none'", pic);
-						js.executeScript("arguments[0].scrollIntoView();", element);
-					}
-
-					if (typeChart == 2) {
-						js.executeScript("arguments[0].style.visibility='visible'", element);
-						js.executeScript("arguments[0].style.display='none'", pic);
-						js.executeScript("arguments[0].scrollIntoView();", cRight);
-					}
-					if (typeChart == 3) {
-						js.executeScript("arguments[0].style.visibility='visible'", element);
-						js.executeScript("arguments[0].style.display='none'", pic);
-						js.executeScript("arguments[0].scrollIntoView();", MRight);
-					}
-					btnshow.setText(showchart ? "hide" : "show");
-
-				} else {
-					js.executeScript("arguments[0].style.visibility='hidden'", element);
-					js.executeScript("arguments[0].style.display='block'", pic);
-					js.executeScript("arguments[0].scrollIntoView();", pic);
-				}
-			} else {
-				if (!showchart) {
-					System.out.println("2");
-					frmRubbyMoney.setTitle("Java loading ....");
-					frmRubbyMoney.setBounds(100, 100, 484, 130);
-					frmRubbyMoney.setLocation(900, 600);
-					SHD.setBounds(303, 42, 30, 20);
-					txtAuto.setBounds(303, 68, 30, 20);
-					lblSM.setLocation(405, 55);
-
-				} else {
-					frmRubbyMoney.setTitle("Rubby money");
-
-					frmRubbyMoney.setBounds(100, 250, 484, 288);
-					frmRubbyMoney.setLocation(870, 450);
-					SHD.setBounds(303, 95, 30, 20);
-					txtAuto.setBounds(303, 119, 30, 20);
-
-					lblSM.setLocation(394, 233);
-				}
+			} catch (NoSuchElementException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 
-			if (e.getKeyCode() == NativeKeyEvent.VC_NUM_LOCK) {
-
-				mx = MouseInfo.getPointerInfo().getLocation().x;
-				my = MouseInfo.getPointerInfo().getLocation().y;
-				// ve duong thang
-
-			}
+			
 		} // if
 		if (e.getKeyCode() == NativeKeyEvent.VC_X) {
 			enableKeyBoard = !enableKeyBoard;
@@ -5065,5 +5148,29 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
+	}
+	@SuppressWarnings("deprecation")
+	private static void until(WebDriver driver, Function<WebDriver, Boolean> waitCondition, int timeoutInSeconds){
+		WebDriverWait webDriverWait = new WebDriverWait(driver, timeoutInSeconds);
+		webDriverWait.withTimeout(timeoutInSeconds, TimeUnit.SECONDS);
+		try{
+			webDriverWait.until(waitCondition);
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}          
+	}
+	public static void untilPageLoadComplete(WebDriver driver, int i){
+		until(driver, (d) ->
+			{
+				Boolean isPageLoaded = (Boolean)((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+				if (!isPageLoaded)
+					try {
+						frmRubbyMoney.setTitle("Document is loading");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				return isPageLoaded;
+			}, i);
 	}
 }
