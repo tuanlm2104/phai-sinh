@@ -4547,7 +4547,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						lblTB.setLocation(14,61);
 						tglbtnAuto.setLocation(23,30);
 						SHD.setLocation(371, 38);
-						txtAuto.setLocation(371, 57);
+						txtAuto.setLocation(371, 59);
 					
 						panel_info.setLocation(400, 38);
 						System.out.println("go mini");
