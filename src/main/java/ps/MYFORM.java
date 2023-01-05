@@ -237,6 +237,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	ButtonGroup buttonGroup_Mua_Ban = new ButtonGroup();
 	ButtonGroup buttonGroupTTL = new ButtonGroup();
 	JTextField textGiaKhop = new JTextField();
+	JPanel panel_info = new JPanel();
+	final JToggleButton tglbtnAuto = new JToggleButton("Auto");
 	// ObjectHistory[] ArrObjectHistory;
 	ObjectHistory[] ArrObjectHistory = new ObjectHistory[100];
 
@@ -576,12 +578,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		frmRubbyMoney.setLocation(870, 450);
 
 		ImageIcon iconeStart = new ImageIcon(Toolkit.getDefaultToolkit().getImage("C:\\jar\\Start.png"));
-		panel.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				System.out.println("move");
-			}
-		});
+		
 
 		panel.setBackground(Color.BLACK);
 		panel.setBounds(1, 0, 479, 253);
@@ -1261,7 +1258,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			}
 		});
 		btnDongMK.setToolTipText("DONG HOP DONG MK");
-		SHD.setBounds(371, 95, 30, 20);
+		SHD.setBounds(371, 94, 30, 20);
 		panel.add(SHD);
 		SHD.setFont(new Font("Tahoma", Font.BOLD, 11));
 		SHD.setEditable(false);
@@ -1855,7 +1852,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel.add(lblVN30New);
 		lblVN30New.setForeground(Color.WHITE);
 		lblVN30New.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		conn.setBounds(371, 42, 50, 14);
+		conn.setBounds(391, 3, 50, 14);
 		panel.add(conn);
 
 		conn.setForeground(Color.WHITE);
@@ -1864,7 +1861,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		final JLabel Iconn = new JLabel("conn");
 		Iconn.setForeground(Color.WHITE);
 		Iconn.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		Iconn.setBounds(425, 42, 24, 14);
+		Iconn.setBounds(445, 3, 24, 14);
 		panel.add(Iconn);
 
 		tglbtnShowChart.addChangeListener(new ChangeListener() {
@@ -1885,7 +1882,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		tglbtnShowList.setBounds(76, 124, 65, 20);
 		panel.add(tglbtnShowList);
 
-		final JToggleButton tglbtnAuto = new JToggleButton("Auto");
+		
 		tglbtnAuto.setBounds(147, 124, 70, 21);
 		panel.add(tglbtnAuto);
 
@@ -1935,7 +1932,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel.add(panelKey);
 
 		panelKey.add(new JLabel(new ImageIcon("c:/jar/keyboard.png")));
-		lblTB.setBounds(1, 31, 77, 14);
+		lblTB.setBounds(1, 30, 77, 14);
 		panel.add(lblTB);
 		lblTB.setFont(new Font("Tahoma", Font.PLAIN, 9));
 
@@ -2324,7 +2321,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				try {
 					thread.suspend();
 					js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
-					js.executeScript("document.body.style.zoom = '80%';");
+					js.executeScript("document.body.style.zoom = '50%';");
 			/*
 					if (textGiaKhop.getText() != "") {
 						if (tontaiHD == 0) { // SHORT
@@ -2383,18 +2380,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		lblDong_1_2_1.setBounds(78, 230, 49, 14);
 		panel.add(lblDong_1_2_1);
 		lblDong_1_2_1.setForeground(Color.WHITE);
-		lblHDK.setBounds(399, 203, 46, 14);
-		panel.add(lblHDK);
-		lblHDK.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblHDK.setForeground(Color.WHITE);
-
-		JButton btnNewButton_2 = new JButton("");
-		btnNewButton_2.setBounds(383, 222, 76, 7);
-		panel.add(btnNewButton_2);
-		lblSM.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSM.setBounds(399, 236, 43, 14);
-		panel.add(lblSM);
-		lblSM.setForeground(Color.WHITE);
 
 		final JButton btnStart = new JButton("Start");
 		btnStart.setBounds(277, 230, 20, 20);
@@ -2479,7 +2464,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnNewButton_4_1.setBounds(302, 230, 20, 20);
 		panel.add(btnNewButton_4_1);
 		btnNewButton_4_1.setIcon(iconeStart);
-		btnClear.setBounds(326, 226, 56, 20);
+		btnClear.setBounds(326, 229, 56, 20);
 		panel.add(btnClear);
 		btnClear.addMouseListener(new MouseAdapter() {
 			@Override
@@ -2512,6 +2497,24 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnClear.setForeground(Color.RED);
 		btnClear.setFont(new Font("Tahoma", Font.BOLD, 8));
+		
+		
+		panel_info.setBackground(Color.BLACK);
+		panel_info.setBounds(400, 201, 79, 48);
+		panel.add(panel_info);
+		panel_info.setLayout(null);
+		lblHDK.setBounds(16, 0, 46, 14);
+		panel_info.add(lblHDK);
+		lblHDK.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblHDK.setForeground(Color.WHITE);
+		
+				JButton btnNewButton_2 = new JButton("");
+				btnNewButton_2.setBounds(0, 19, 76, 7);
+				panel_info.add(btnNewButton_2);
+				lblSM.setBounds(0, 34, 76, 14);
+				panel_info.add(lblSM);
+				lblSM.setHorizontalAlignment(SwingConstants.CENTER);
+				lblSM.setForeground(Color.WHITE);
 		btnNewButton_4_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -4518,28 +4521,36 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							frmRubbyMoney.setBounds(100, 100, 484, 288);
 							frmRubbyMoney.setLocation(550, 350);
 							SHD.setBounds(303, 95, 30, 20);
-							txtAuto.setBounds(303, 119, 30, 20);
-
-							lblSM.setLocation(394, 233);
+						
+							
+							lblTB.setLocation(1,30);
+							tglbtnAuto.setLocation(147,124);
+							SHD.setLocation(371, 95);
+							txtAuto.setLocation(371, 119);
+							panel_info.setLocation(400, 201);
 						} else {
 							frmRubbyMoney.setTitle("Rubby money");
 
 							frmRubbyMoney.setBounds(100, 250, 484, 288);
 							frmRubbyMoney.setLocation(700, 250);
-							SHD.setBounds(303, 95, 30, 20);
-							txtAuto.setBounds(303, 119, 30, 20);
-
-							lblSM.setLocation(394, 233);
+							lblTB.setLocation(1,30);
+							tglbtnAuto.setLocation(147,124);
+							SHD.setLocation(371, 95);
+							txtAuto.setLocation(371, 119);
+							panel_info.setLocation(400, 201);
 						}
 					} else {
-						System.out.println("1");
-						frmRubbyMoney.setTitle("Java loading ....");
+					
+						frmRubbyMoney.setTitle("Java loading ....");  //MINIMIZE
 						frmRubbyMoney.setBounds(100, 100, 484, 130);
 						frmRubbyMoney.setLocation(900, 600);
-						SHD.setBounds(303, 42, 30, 20);
-						txtAuto.setBounds(303, 68, 30, 20);
-						lblSM.setLocation(405, 55);
-						// panel.add(lblSM);
+						lblTB.setLocation(14,61);
+						tglbtnAuto.setLocation(23,30);
+						SHD.setLocation(371, 38);
+						txtAuto.setLocation(371, 57);
+					
+						panel_info.setLocation(400, 38);
+						System.out.println("go mini");
 						driverStock.findElement(By.xpath("/html/body/div[2]/input")).click();
 
 					}
@@ -4576,8 +4587,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						frmRubbyMoney.setLocation(900, 600);
 						SHD.setBounds(303, 42, 30, 20);
 						txtAuto.setBounds(303, 68, 30, 20);
-						lblSM.setLocation(405, 55);
-
+						
+					
 					} else {
 						frmRubbyMoney.setTitle("Rubby money");
 
@@ -4586,7 +4597,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						SHD.setBounds(303, 95, 30, 20);
 						txtAuto.setBounds(303, 119, 30, 20);
 
-						lblSM.setLocation(394, 233);
+						
 					}
 					
 					
