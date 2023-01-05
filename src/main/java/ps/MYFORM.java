@@ -4580,22 +4580,29 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						js.executeScript("arguments[0].scrollIntoView();", pic);
 					}
 				} else {
-					if (!showchart) {
+					if (!showchart) { //khong show tradeview chart , miniz
 						System.out.println("2");
 						frmRubbyMoney.setTitle("Java loading ....");
 						frmRubbyMoney.setBounds(100, 100, 484, 130);
-						frmRubbyMoney.setLocation(900, 600);
-						SHD.setBounds(303, 42, 30, 20);
-						txtAuto.setBounds(303, 68, 30, 20);
+						frmRubbyMoney.setLocation(888, 603);
+						lblTB.setLocation(14,61);
+						tglbtnAuto.setLocation(23,30);
+						SHD.setLocation(371, 44);
+						txtAuto.setLocation(371, 65);
+					
+						panel_info.setLocation(400, 38);
 						
 					
 					} else {
-						frmRubbyMoney.setTitle("Rubby money");
+						frmRubbyMoney.setTitle("Rubby money");  //khong show tradeview chart , max
 
 						frmRubbyMoney.setBounds(100, 250, 484, 288);
 						frmRubbyMoney.setLocation(870, 450);
-						SHD.setBounds(303, 95, 30, 20);
-						txtAuto.setBounds(303, 119, 30, 20);
+						lblTB.setLocation(1,30);
+						tglbtnAuto.setLocation(147,124);
+						SHD.setLocation(371, 95);
+						txtAuto.setLocation(371, 119);
+						panel_info.setLocation(400, 201);
 
 						
 					}
