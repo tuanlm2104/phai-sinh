@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+
+<!------ Include the above in your HEAD tag ---------->
+<style type="text/css">
+
+body {
+  background-color: #999999;
+}
+
+.chart-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+   border: 1px solid #000000;
+  transform: translate3d(-50%,-50%,0);
+}
+
+.chart-wrapper__overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  background: rgba(255,255,255,.8) url("Picture/Right.PNG") no-repeat 50% 50%;
+  z-index: 10;
+  transition: opacity .25s ease-out;
+}
+
+.chart-wrapper.-active .chart-wrapper__overlay {
+  opacity: 0;
+}
+
+.chart-wrapper__chart iframe {
+  display: block;
+}
+</style>
+
+
+ <style type="text/css">
+ #left {
+  
+	overflow: hidden;
+	float: left;
+}
+#right{
+   
+	overflow: hidden;
+}
+
+ </style>
+
+
+</head>
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript">
+function HideChart() {
+		$(document).ready(function(){
+			  
+		
+			$('#idBody').attr('style','display:none');
+			});
+}
+function ShowChart() {
+	$("#idBody").attr('style','display:block');
+	$("#idBody").attr('style','width: 620px');
+	$("#idBody").attr('style','height: 500px');
+	$("#idBody").attr('style','float: left');
+}
+</script>
+<script type="text/javascript">
+var myPix = new Array("Picture/Picture1.PNG","Picture/Picture2.PNG","Picture/Picture3.PNG");
+function displayImage() {
+	 var randomNum = Math.floor(Math.random() * myPix.length);
+	
+    console.log(myPix[randomNum]);
+	 document.getElementById("pic").src = myPix[randomNum];
+  
+}
+
+</script>
+<body>
+	<div id="parent" style="visibility: visible">
+	
+		<div
+			class="panel panel-primary draggable-panel toolbar-panel ui-draggable ui-resizable"
+			id="left"    style="width: 600px;height: 600px; float:left ">
+			<!--     <div class="panel-heading lang-panel-header-tools"><i class="fa fa-times pull-right close-panel" id="close-toolbox-tools"></i><i class="fa pull-right fa-chevron-down" id="toggle-toolbox-tools"></i></div>-->
+			<iframe width="100%" height="100%" style="height: 100%; width: 100%"
+				id="iframe_left" class="resizable" src="https://dchart.vndirect.com.vn"></iframe>
+
+		</div>
+		<div>
+			<div
+				class="panel panel-primary draggable-panel toolbar-panel ui-draggable ui-resizable"
+				id="right"  style=" width: 600px;height: 600px;;">
+				<!-- <div class="panel-heading lang-panel-header-tools"><i class="fa fa-times pull-right close-panel" id="close-toolbox-tools"></i><i class="fa pull-right fa-chevron-down" id="toggle-toolbox-tools1"></i></div>-->
+				<iframe width="100%" height="100%" style="height: 100%; width: 100%"
+				id="iframe_right" class="resizable" src="https://dchart.vndirect.com.vn"></iframe>
+			</div>
+		</div>
+
+	</div>
+<div>
+
+<img id="pic"  src="Picture/Picture.PNG"  style="display: block"/>
+
+<input type="button" onClick="displayImage()" value="Display Random Image">
+
+<!-- CHILD  -->
+	
+		<div id="Cparent" style="visibility: visible">
+
+			<div id="CIdhead"
+				style="width: 1300px; height: 200px; background: gray;">
+				<img id="pic" style="display: block" />
+			</div>
+
+
+			<div id="Cleft"
+				style="width: 2px; height: 500px;float: left ">
+				<img id="pic" src="Picture/Picture.PNG" style="display: block" />
+			</div>
+
+			<div id="CBody"  style="width: 600px; height: 500px;float: left ">
+				
+			<!--	<iframe width="100%" height="100%" src="https://dchart.vndirect.com.vn"></iframe> -->
+			</div>
+			<div>
+				<div id="Cright" style="width: 680px; height: 500px; float: left  ;">
+					<img id="cpic" src="Picture/Right.PNG" style="display: block" />
+				</div>
+			</div>
+
+		</div>
+		
+		<!-- MA  -->
+	<div id="Mparent" style="visibility: visible">
+
+			
+
+			<div id="Mleft"
+				style="width: 2px; height: 500px;float: left ">
+				<img id="picm2" src="Picture/Picture.PNG" style="display: block" />
+			</div>
+
+			<div id="MBody"  style="width: 600px; height: 500px;float: left ">
+				
+				<iframe id="iframe_bottom" width="100%" height="100%" src="https://dchart.vndirect.com.vn"></iframe>
+			</div>
+			<div>
+				<div id="Mright" style="width: 680px; height: 500px; float: left  ;">
+					<img id="picm3" src="Picture/Right.PNG" style="display: block" />
+				</div>
+			</div>
+
+		</div>
+</div>
+
+</body>
+</html>
