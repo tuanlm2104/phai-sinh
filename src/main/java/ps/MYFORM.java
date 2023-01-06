@@ -462,9 +462,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				}
 				if (typeChart == 2) {
 
-					WebElement left = driverStock.findElement(By.xpath("//*[@id=\"Cleft\"]"));
+					WebElement left = driverStock.findElement(By.xpath("//*[@id=\"Mleft\"]"));
 
-					WebElement right = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
+					WebElement right = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
 
 					if (steps == 1) {
 						if (widthleft2 <= 680 && widthriht2 > 51) {
@@ -1488,13 +1488,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				double steps = e.getWheelRotation();
 				if (!txtCL_DUOI.getText().isEmpty()) {
 					if (steps == 1) {
-						txtCL_TREN.setText(String.valueOf(df.format(Double.valueOf(txtCL_DUOI.getText()) + 0.1)));
+						
+
+						txtCL_TREN.setText(String.valueOf(df.format(Double.valueOf(txtCL_TREN.getText()) - 0.1)));
 						txtCL_DUOI.setText(String.valueOf(df.format(Double.valueOf(txtCL_DUOI.getText()) + 0.1)));
 
 					} else {
-						txtCL_TREN.setText(String.valueOf(df.format(Double.valueOf(txtCL_DUOI.getText()) - 0.1)));
+						txtCL_TREN.setText(String.valueOf(df.format(Double.valueOf(txtCL_TREN.getText()) + 0.1)));
 						txtCL_DUOI.setText(String.valueOf(df.format(Double.valueOf(txtCL_DUOI.getText()) - 0.1)));
-
 					}
 
 				}
@@ -1887,7 +1888,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel.add(tglbtnAuto);
 
 		final JButton btnType = new JButton("1");
-		btnType.setBounds(0, 100, 37, 23);
+		btnType.setBounds(0, 100, 44, 23);
 		panel.add(btnType);
 		btnType.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
@@ -3068,9 +3069,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											GIA_KHOP = (Float.valueOf(Float.parseFloat(
 													(String) Khop.replaceAll(",", ""))))
 															.floatValue();
-											if (!dongbang) {
+											if (dongbang==false) {
+												System.out.println(">>khong dong bang");
 											textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
 											}
+											
 											try {
 												if ((!Mua.equals("ATO"))
 														&& (!Mua.equals("ATC"))) {
@@ -3283,7 +3286,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														}
 
 													}
-													// only buy
+													// only buy , mua theo chieu tang
 													if (buttonGroupCL_DUOI.getSelection().getActionCommand()
 															.equals("CLMua_DUOI")
 															&& (temp2 >= Double.valueOf(txtAuto.getText()))) {
@@ -3318,7 +3321,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														txtCL_TREN.setForeground(Color.BLUE);
 
 													}
-													// only sell
+													// only sell, ban theo chieu giam
 													if (buttonGroupCL_DUOI.getSelection().getActionCommand()
 															.equals("CLBan_DUOI")
 															&& (temp2 >= Double.valueOf(txtAuto.getText()))) {
@@ -3374,18 +3377,18 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 												}
 											}
-
+										
 											// -------------------BREAK ------------------------------
 											if (chckBreak.isSelected()) {
 												// -------------------------TREN
 
 												if (buttonGroupCL_TREN.getSelection().getActionCommand()
 														.equals("CLMua_TREN") && (txtCL_TREN.getText().length() > 1)) {
-
-													if (GIA_KHOP >= Double.valueOf(txtCL_TREN.getText())) {
+												
+													if (Double.valueOf(textGiaKhop.getText()) >= Double.valueOf(txtCL_TREN.getText()) ){
 														Order_special("M", "MTL");
 														CL_N_TREN.setSelected(true);
-														lblTB.setText("MUA BRAEK - " + time.getText());
+														lblTB.setText("MUA BRAEK - " );
 														chckBreak.setSelected(false);
 														timerLB = new javax.swing.Timer(500,
 																new MYFORM.LbBlink(lblTB, "red"));
@@ -3393,17 +3396,17 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														timerLB.start();
 
 														txtCL_TREN.setText("");
-
+														System.out.println(">>mua break");
 													}
 												}
 
-												if (buttonGroupCL_TREN.getSelection().getActionCommand()
-														.equals("CLBan_TREN") && (txtCL_TREN.getText().length() > 1)) {
-
-													if (GIA_KHOP <= Double.valueOf(txtCL_TREN.getText())) {
+												if (buttonGroupCL_DUOI.getSelection().getActionCommand()
+														.equals("CLBan_DUOI") && (txtCL_DUOI.getText().length() > 1)) {
+													
+													if (Double.valueOf(textGiaKhop.getText()) <= Double.valueOf(txtCL_DUOI.getText())) {
 														Order_special("B", "MTL");
 														CL_N_TREN.setSelected(true);
-														lblTB.setText("BAN BREAK - " + time.getText());
+														lblTB.setText("BAN BREAK - ");
 														chckBreak.setSelected(false);
 														timerLB = new javax.swing.Timer(500,
 																new MYFORM.LbBlink(lblTB, "green"));
@@ -3411,7 +3414,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														timerLB.start();
 
 														txtCL_TREN.setText("");
-
+														
 													}
 												}
 												// -----------------------------DUOI
@@ -4131,6 +4134,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		// WebElement elementMTL = driverVPS.findElement(By.xpath(MAKxpath));
 		js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
 		if (Action == "M") {
+			System.out.println("mua dac biet");
 			if (lenh == "MAK") {
 
 				// WebElement elementMAK = driverVPS.findElement(By.xpath(MAKxpath));
@@ -4565,7 +4569,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						if (typeChart == 2) {
 							js.executeScript("arguments[0].style.visibility='visible'", element);
 							js.executeScript("arguments[0].style.display='none'", pic);
-							js.executeScript("arguments[0].scrollIntoView();", cRight);
+							js.executeScript("arguments[0].scrollIntoView();", MRight);
 						}
 						if (typeChart == 3) {
 							js.executeScript("arguments[0].style.visibility='visible'", element);
@@ -4669,16 +4673,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			if (dongbang) {
 				lblTB1.setForeground(new Color(245, 247, 227));
 				lblTB1.setText("Dong Bang");
-				int x = frmRubbyMoney.getLocation().x + 343;
-				int y = frmRubbyMoney.getLocation().y + 157;
-
-				try {
-					r = new Robot();
-					r.mouseMove(x, y);
-				} catch (AWTException e1) {
-
-					e1.printStackTrace();
-				}
+				/*
+				 * int x = frmRubbyMoney.getLocation().x + 343; int y =
+				 * frmRubbyMoney.getLocation().y + 157;
+				 * 
+				 * try { r = new Robot(); r.mouseMove(x, y); } catch (AWTException e1) {
+				 * 
+				 * e1.printStackTrace(); }
+				 */
 
 			} else {
 				lblTB1.setForeground(Color.ORANGE);
@@ -5011,7 +5013,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		driverStock.switchTo().frame(F2);
 
-		// setupBackground(typeColor);
+		 setupBackground(typeColor);
 
 		driverStock.findElement(By.id("header-toolbar-indicators")).click();
 		try {
