@@ -376,6 +376,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			public void run() {
 				try {
 					SwingUtilities.invokeLater(new Runnable() {
+						@SuppressWarnings("static-access")
 						public void run() {
 							MYFORM window = new MYFORM();
 
