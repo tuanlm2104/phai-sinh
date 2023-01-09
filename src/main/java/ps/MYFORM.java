@@ -4509,13 +4509,18 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 					JavascriptExecutor js = (JavascriptExecutor) driverStock;
 
-					
+					/*
 					
 						element = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
 						pic = driverStock.findElement(By.xpath("//*[@id=\"pic\"]"));
 						cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
 						MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
-				
+				*/
+
+					element = driverStock.findElement(By.id("parent"));
+					pic = driverStock.findElement(By.id("pic"));
+					cRight = driverStock.findElement(By.id("Cright"));
+					MRight = driverStock.findElement(By.id("Mright"));
 
 					// panel_logo.setVisible(!showchart);
 
