@@ -2650,31 +2650,25 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnSetup.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+		
 				Runnable StockThread = new Runnable() {
 
 					public void run() {
+						js = (JavascriptExecutor) driverStock;
+						
 						driverStock.switchTo().defaultContent();
 
-						setupChart("iframe_left", 0, typeColor);
+				
 						try {
-							Thread.sleep(300);
+							setupChart("iframe_left", 0, typeColor);
+							Thread.sleep(200);
 							setupChart("iframe_right", 0, typeColor);
-							Thread.sleep(300);
-							setupChart("iframe_bottom", 0, typeColor);
+							//Thread.sleep(300);
+							//setupChart("iframe_bottom", 0, typeColor);
 						} catch (InterruptedException e) {
 
 							e.printStackTrace();
 						}
-
-						/*
-						 * setupChart(1, 0); try { Thread.sleep(500); } catch (InterruptedException e) {
-						 * 
-						 * e.printStackTrace(); } setupChart(2, 0); try { Thread.sleep(500); } catch
-						 * (InterruptedException e) {
-						 * 
-						 * e.printStackTrace(); } // setupChart(3, 0);
-						 */
 
 					}// run
 				};// runable
@@ -2702,20 +2696,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						driverStock.manage().window().setSize(n);
 						;
 
-						JavascriptExecutor j = (JavascriptExecutor) driver;
-						if (j.executeScript("return document.readyState").toString().equals("complete")) {
-							System.out.println("Page has loaded");
-						}
-						for (int i = 0; i < 50; i++) {
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException ex) {
-								System.out.println("Page has not loaded yet ");
-							}
-							// again check page state
-							if (j.executeScript("return document.readyState").toString().equals("complete")) {
-							}
-						}
+					
+						
 						// driverStock.switchTo().frame(driverStock.findElement(By.xpath("//*[contains(@id,'tradingview')]")));
 					} // Thread
 				};
@@ -4538,6 +4520,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							SHD.setLocation(371, 95);
 							txtAuto.setLocation(371, 119);
 							panel_info.setLocation(400, 201);
+							js.executeScript("window.scrollBy(0,-50)", "");
 						} else {
 							frmRubbyMoney.setTitle("Rubby money");
 
@@ -4560,8 +4543,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						txtAuto.setLocation(371, 65);
 					
 						panel_info.setLocation(400, 38);
-						System.out.println("go mini");
-						driverStock.findElement(By.xpath("/html/body/div[2]/input")).click();
+					
 
 					}
 
@@ -4570,6 +4552,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							js.executeScript("arguments[0].style.visibility='visible'", element);
 							js.executeScript("arguments[0].style.display='none'", pic);
 							js.executeScript("arguments[0].scrollIntoView();", element);
+							js.executeScript("window.scrollBy(0,-50)", "");
 						}
 
 						if (typeChart == 2) {
@@ -5023,20 +5006,29 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		driverStock.findElement(By.id("header-toolbar-indicators")).click();
 		try {
-			Thread.sleep(200);
+			Thread.sleep(100);
 
 			driverStock.findElement(By.xpath(StrInput)).click();
-			Thread.sleep(100);
+			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrMACD)).click(); // MACD
-			Thread.sleep(100);
+			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrRSI)).click(); // RSI
-			Thread.sleep(100);
+			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrParabolSAR)).click(); // SAR
-			Thread.sleep(100);
+			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrMAROSS)).click(); // Ross
-			Thread.sleep(100);
+			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrClose)).click();
-
+			Thread.sleep(50);
+	/*
+			driverStock.findElement(By.xpath("/html/body/div[1]/div[1]/div/div[1]/div[3]/table/tbody/tr[7]/td[2]/div/div[3]/div/span[2]/a[2]/svg/path")).click();
+			Thread.sleep(100);
+			driverStock.findElement(By.xpath("/html/body/div[4]/div[4]/div[3]/table[1]/tbody/tr[1]/td[3]/span/input")).click();
+			Thread.sleep(100);
+			driverStock.findElement(By.xpath("/html/body/div[5]/div[1]/table[1]/tbody/tr/td[10]/div/div")).click();
+			Thread.sleep(100);
+			driverStock.findElement(By.xpath("/html/body/div[4]/div[4]/div[4]/div/a[2]")).click();
+      */
 			if (F1 == "iframe_left") {
 
 				driverStock.findElement(By.id("header-toolbar-intervals")).click();
