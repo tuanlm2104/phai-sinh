@@ -175,8 +175,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	String Muaxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[1]/button";
 	String Banxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[2]/button";
 	String Huyxpath = "//*[@id=\"orderPS\"]/div/div[3]/button";
-	
-	String ATCxpath="	//*[@id=\"right_btnordertype\"]/div/span[2]";
+	String ATOxpath="//*[@id=\"right_btnordertype\"]/div/span[1]";
+	String ATCxpath="//*[@id=\"right_btnordertype\"]/div/span[2]";
 	String MTLxpath = "//*[@id=\"right_btnordertype\"]/div/span[3]";
 	String MAKxpath = "//*[@id=\"right_btnordertype\"]/div/span[5]";
 	
@@ -197,7 +197,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	Runnable countDownThread, HistoryThread, StockInfo;
 	JPanel panelKey = new JPanel();
 	boolean isPresent = true, showtradeview = true;
-	boolean fixme = false, showlist = false, BAN_ATC = false, MUA_ATC = false;
+	boolean fixme = false, showlist = false, BAN_ATC = false, MUA_ATC = false,BAN_ATO = false, MUA_ATO = false;
 	// ----------------------------------------------------------------
 	int PID, PID1;
 	JLabel lblVN30 = new JLabel("VN30");
@@ -207,7 +207,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	boolean enableKeyBoard = false, dongbang = false, dongbangBreak = false, loadDriver = false;
 	int cuongdo, countvn30 = 0, tontaiHD = 0, codinhY, codinhX, count1 = 0, count2 = 0, mx, my, mx1 = 215, my1 = 281,
 			widthleft1 = 580, widthriht1 = 740, widthleft2 = 2, widthriht2 = 680, widthleft3 = 2, widthriht3 = 680;
-	WebElement hdchuaK, Igia, hdkhop, stype, time, status, Igiadat, modal_price, MuaButton,ButtonATC, BanButton,BanButtonATC, vn30, vn30New,
+	WebElement hdchuaK, Igia, hdkhop, stype, time, status, Igiadat, modal_price, MuaButton,ButtonATO,ButtonATC, BanButton,BanButtonATC, vn30, vn30New,
 			connect;
 	String gia, giadat;
 	int sohd_daonguoc, countvn30new = 1, countvn30newMax = 3;
@@ -716,7 +716,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				if (enableKeyBoard) {
 
 					try {
-						if (MUA_ATC == false) {
+						if (MUA_ATC == false&&MUA_ATO==false) {
 							txtCL_TREN.setText("");
 							CL_N_TREN.setSelected(true);
 							if (!tglbtnShowHistory.isSelected()) {
@@ -735,11 +735,21 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							js.executeScript("arguments[0].click();", MuaButton);
 							
 						}else {
+							if(MUA_ATC) {
 							ButtonATC=driverVPS.findElement(By.xpath(ATCxpath));
 							js.executeScript("arguments[0].click();", ButtonATC);
 							
 							MuaButton = driverVPS.findElement(By.xpath(Muaxpath));
 							js.executeScript("arguments[0].click();", MuaButton);
+							}
+							else {
+								System.out.println("go to ato mua ...");
+								ButtonATO=driverVPS.findElement(By.xpath(ATOxpath));
+								js.executeScript("arguments[0].click();", ButtonATO);
+								
+								MuaButton = driverVPS.findElement(By.xpath(Muaxpath));
+								js.executeScript("arguments[0].click();", MuaButton);
+								}
 						}
 					} catch (Exception eMua) {
 
@@ -821,12 +831,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		addPopup(btnMuaK, popupMenu_MUA_ATC);
 
 		JMenuItem mnItem_Mua_ATC = new JMenuItem("ATC");
+		final JButton btnBanK = new JButton("");
 		mnItem_Mua_ATC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MUA_ATC = !MUA_ATC;
-				if (MUA_ATC) {
+				MUA_ATC =true;BAN_ATC =true;
+		
 					btnMuaK.setText("ATC");
-				}
+					btnBanK.setText("ATC");
+				
 
 			}
 		});
@@ -835,19 +847,32 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		JMenuItem mnItem_Mua_ATC_NONE = new JMenuItem("NONE");
 		mnItem_Mua_ATC_NONE.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MUA_ATC = false;
+				MUA_ATC = false;MUA_ATO = false;
 			}
 		});
+		
+		JMenuItem mnItem_Mua_ATO = new JMenuItem("ATO");
+		
+		mnItem_Mua_ATO.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MUA_ATO =true;BAN_ATO=true;
+				MUA_ATC=false;BAN_ATC=false;
+					btnMuaK.setText("ATO");
+					btnBanK.setText("ATO");
+				
+			}
+		});
+		popupMenu_MUA_ATC.add(mnItem_Mua_ATO);
 		popupMenu_MUA_ATC.add(mnItem_Mua_ATC_NONE);
 
-		final JButton btnBanK = new JButton("");
+	
 		btnBanK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				if (enableKeyBoard) {
 					BanButton = driverVPS.findElement(By.xpath(Banxpath));
 					try {
-						if (BAN_ATC == false) {
+						if (BAN_ATC == false && BAN_ATO==false) {
 							txtCL_TREN.setText("");
 							CL_N_TREN.setSelected(true);
 
@@ -867,10 +892,19 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 							
 						}else {
+							if(BAN_ATC) {
+
 							ButtonATC=driverVPS.findElement(By.xpath(ATCxpath));
 							js.executeScript("arguments[0].click();", ButtonATC);
 							js.executeScript("arguments[0].click();", BanButton);
-
+							}
+							else{
+								System.out.println("go to ato ban ...");
+								ButtonATO=driverVPS.findElement(By.xpath(ATOxpath));
+								js.executeScript("arguments[0].click();", ButtonATO);
+								js.executeScript("arguments[0].click();", BanButton);
+								}
+							
 						}
 					} catch (Exception eBan) {
 
@@ -956,10 +990,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		JMenuItem mnItem_Ban_ATC = new JMenuItem("ATC");
 		mnItem_Ban_ATC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BAN_ATC = !BAN_ATC;
-				if (BAN_ATC) {
+				BAN_ATC = true;MUA_ATC=true;
+				
 					btnBanK.setText("ATC");
-				}
+					btnMuaK.setText("ATC");
 
 			}
 
@@ -969,9 +1003,21 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		JMenuItem mnItem_Ban_ATC_NONE = new JMenuItem("NONE");
 		mnItem_Ban_ATC_NONE.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BAN_ATC = false;
+				BAN_ATC = false;BAN_ATO = false;
 			}
 		});
+		
+		JMenuItem mnItem_Ban_ATO = new JMenuItem("ATO");
+		mnItem_Ban_ATO.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BAN_ATO = true;MUA_ATO=true;
+				MUA_ATC=false;BAN_ATC=false;	
+					btnMuaK.setText("ATO");
+					btnBanK.setText("ATO");
+				
+			}
+		});
+		popupMenu_BAN_ATC.add(mnItem_Ban_ATO);
 		popupMenu_BAN_ATC.add(mnItem_Ban_ATC_NONE);
 		btnMAK_MUA.setBounds(146, 70, 70, 23);
 		panel.add(btnMAK_MUA);
@@ -2880,8 +2926,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									retryNeeded1 = false;
 
 								} catch (NoSuchElementException e) {
-
-									e.printStackTrace();
+									frmRubbyMoney.setTitle(" ktra load full page & chart ..");
+									frmRubbyMoney.setTitle(" chua lay gia M/B ..");
 									retryNeeded1 = true;
 								}
 							} while (retryNeeded1);
@@ -3104,18 +3150,13 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 													GIA_MUA_REAL = (Float.valueOf(
 															Float.parseFloat((String) Ban.replaceAll(",", ""))))
 															.floatValue();
-													if (MUA_ATC == false) {
+													if (MUA_ATC == false ||BAN_ATC == false|| MUA_ATO==false || BAN_ATO==false) {
 														if (!dongbang) {
 															btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
-														}
-													}
-													if (BAN_ATC == false) {
-														if (!dongbang) {
-
 															btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
-
 														}
 													}
+													
 
 												}
 											} catch (NoSuchElementException e) {
