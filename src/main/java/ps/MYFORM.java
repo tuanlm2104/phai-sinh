@@ -3150,13 +3150,18 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 													GIA_MUA_REAL = (Float.valueOf(
 															Float.parseFloat((String) Ban.replaceAll(",", ""))))
 															.floatValue();
-													if (MUA_ATC == false ||BAN_ATC == false|| MUA_ATO==false || BAN_ATO==false) {
+													if (MUA_ATC == false && MUA_ATO==false) {
 														if (!dongbang) {
 															btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
-															btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
 														}
 													}
-													
+													if (BAN_ATC == false && BAN_ATO==false) {
+														if (!dongbang) {
+
+															btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
+
+														}
+													}
 
 												}
 											} catch (NoSuchElementException e) {
