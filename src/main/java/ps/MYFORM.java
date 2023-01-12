@@ -1,6 +1,5 @@
 package ps;
 
-
 /* - Neu check option Ban DUOI (KHONG AUTO) ==>chi thuc hien BAN khi gia < gia tri 
   
    - Neu check option Mua DUOI (KHONG AUTO) ==>chi thuc hien MUA khi gia > gia tri
@@ -35,8 +34,6 @@ import com.sun.jna.platform.win32.WinDef.HWND;
 import com.sun.jna.platform.win32.WinUser;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
-
-
 
 //import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -178,8 +175,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	String Muaxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[1]/button";
 	String Banxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[2]/button";
 	String Huyxpath = "//*[@id=\"orderPS\"]/div/div[3]/button";
-	String MAKxpath = "//*[@id=\"right_btnordertype\"]/div/span[5]";
+	
+	String ATCxpath="	//*[@id=\"right_btnordertype\"]/div/span[2]";
 	String MTLxpath = "//*[@id=\"right_btnordertype\"]/div/span[3]";
+	String MAKxpath = "//*[@id=\"right_btnordertype\"]/div/span[5]";
+	
 	@SuppressWarnings("rawtypes")
 	Vector colunm_HeadHistory = new Vector();
 
@@ -197,7 +197,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	Runnable countDownThread, HistoryThread, StockInfo;
 	JPanel panelKey = new JPanel();
 	boolean isPresent = true, showtradeview = true;
-	boolean fixme = false, showlist = false;
+	boolean fixme = false, showlist = false, BAN_ATC = false, MUA_ATC = false;
 	// ----------------------------------------------------------------
 	int PID, PID1;
 	JLabel lblVN30 = new JLabel("VN30");
@@ -207,13 +207,13 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	boolean enableKeyBoard = false, dongbang = false, dongbangBreak = false, loadDriver = false;
 	int cuongdo, countvn30 = 0, tontaiHD = 0, codinhY, codinhX, count1 = 0, count2 = 0, mx, my, mx1 = 215, my1 = 281,
 			widthleft1 = 580, widthriht1 = 740, widthleft2 = 2, widthriht2 = 680, widthleft3 = 2, widthriht3 = 680;
-	WebElement hdchuaK, Igia, hdkhop, stype, time, status, Igiadat, modal_price, MuaButton, BanButton, vn30, vn30New,
+	WebElement hdchuaK, Igia, hdkhop, stype, time, status, Igiadat, modal_price, MuaButton,ButtonATC, BanButton,BanButtonATC, vn30, vn30New,
 			connect;
 	String gia, giadat;
 	int sohd_daonguoc, countvn30new = 1, countvn30newMax = 3;
 
 	JavascriptExecutor js;
-	String String_sohd_daonguoc; 
+	String String_sohd_daonguoc;
 	// ----------------------
 	Thread threadKhop, thread, threadH;
 	Runnable threadVN30, threadHistory;
@@ -358,7 +358,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	private final JTable tableHistory = new JTable();
 	private final JScrollPane scrollPaneHistory = new JScrollPane();
 	private final JLabel lblShow = new JLabel("lblShow");
-	
+
 	private final JToggleButton tglbtnShowList = new JToggleButton("H");
 	JButton btnAction = new JButton("");
 	JButton btnHuyHD = new JButton(new ImageIcon("C:\\jar\\icons8-cancel-16.png"));
@@ -387,7 +387,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								GlobalScreen.addNativeMouseWheelListener(window);
 								window.frmRubbyMoney.setVisible(true);
 							} catch (NativeHookException e) {
-								
+
 								e.printStackTrace();
 							}
 
@@ -579,7 +579,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		frmRubbyMoney.setLocation(870, 450);
 
 		ImageIcon iconeStart = new ImageIcon(Toolkit.getDefaultToolkit().getImage("C:\\jar\\Start.png"));
-		
 
 		panel.setBackground(Color.BLACK);
 		panel.setBounds(1, 0, 479, 253);
@@ -593,14 +592,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				Runnable runnable = new Runnable() {
 					@SuppressWarnings({ "deprecation" })
 					public void run() {
-					
+
 						try {
 							hien_danhSach_lenh = !hien_danhSach_lenh;
-							
-							if(hien_danhSach_lenh) {
+
+							if (hien_danhSach_lenh) {
 								tglbtnShowHistory.setSelected(true);
 								tglbtnShowHistory.setText("PS ON");
-							}else {
+							} else {
 								tglbtnShowHistory.setSelected(false);
 								tglbtnShowHistory.setText("PS OFF");
 							}
@@ -615,8 +614,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								showlist = false;
 								tglbtnShowList.setSelected(false);
 								while (hien_danhSach_lenh) {
-								    rowsNumber = driverVPS
-											.findElements(By.xpath("//*[@id=\"op-order-status\"]/tr"));
+									rowsNumber = driverVPS.findElements(By.xpath("//*[@id=\"op-order-status\"]/tr"));
 									countme = rowsNumber.size();
 
 									if (countme > 0) {
@@ -624,7 +622,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 										Vector newRecordHistory = null;
 
 										if (rowsNumber.size() > 3) {
-											countme =3;
+											countme = 3;
 										}
 										for (int k = 1; k < countme + 1; k++) {
 
@@ -656,41 +654,42 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											newRecordHistory.addElement(hdchuaK.getText());
 											newRecordHistory.addElement(time.getText());
 											total_recordHistory.addElement(newRecordHistory);
-											frmRubbyMoney.setTitle("history   " + total_recordHistory.get(0)+", rows : "+rowsNumber.size());
+											frmRubbyMoney.setTitle("history   " + total_recordHistory.get(0)
+													+ ", rows : " + rowsNumber.size());
 										}
 
-										
-											final DefaultTableModel tableModel = (DefaultTableModel) tableHistory.getModel();
-											SwingUtilities.invokeLater(new Runnable() {
-												public void run() {
-													tableHistory.setModel(
-															new DefaultTableModel(total_recordHistory, colunm_HeadHistory));
-													tableModel.fireTableDataChanged();
-													frmRubbyMoney.setTitle("history..." + total_recordHistory.get(0)+", rows : "+ rowsNumber.size());
-
-												}
-											});
-
-											// ------------------------- tableHistory
-
-											if (initHD) {
-												WebElement element = driverVPS
-														.findElement(By.xpath("//*[@id=\"footer_filter_panel\"]/button"));
-												js.executeScript("arguments[0].click();", element);
-												initHD = !initHD;
-											}
-
-											if (time.getText() != "") {
-
-												tableHistory.setEnabled(false);
-												tableHistory.setForeground(Color.BLACK);
-												tableHistory.setBackground(new Color(242, 245, 249));
-
-												tableHistory.setDefaultRenderer(Object.class, new StockPSRenderer());
+										final DefaultTableModel tableModel = (DefaultTableModel) tableHistory
+												.getModel();
+										SwingUtilities.invokeLater(new Runnable() {
+											public void run() {
+												tableHistory.setModel(
+														new DefaultTableModel(total_recordHistory, colunm_HeadHistory));
+												tableModel.fireTableDataChanged();
+												frmRubbyMoney.setTitle("history..." + total_recordHistory.get(0)
+														+ ", rows : " + rowsNumber.size());
 
 											}
+										});
 
-										
+										// ------------------------- tableHistory
+
+										if (initHD) {
+											WebElement element = driverVPS
+													.findElement(By.xpath("//*[@id=\"footer_filter_panel\"]/button"));
+											js.executeScript("arguments[0].click();", element);
+											initHD = !initHD;
+										}
+
+										if (time.getText() != "") {
+
+											tableHistory.setEnabled(false);
+											tableHistory.setForeground(Color.BLACK);
+											tableHistory.setBackground(new Color(242, 245, 249));
+
+											tableHistory.setDefaultRenderer(Object.class, new StockPSRenderer());
+
+										}
+
 									}
 								}
 							}
@@ -698,7 +697,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							// TODO Auto-generated catch block
 							frmRubbyMoney.setTitle("history..." + "bi loi" + eHistory.getMessage());
 
-						
 						}
 					}
 				};
@@ -718,26 +716,37 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				if (enableKeyBoard) {
 
 					try {
+						if (MUA_ATC == false) {
+							txtCL_TREN.setText("");
+							CL_N_TREN.setSelected(true);
+							if (!tglbtnShowHistory.isSelected()) {
+								tglbtnShowHistory.doClick();
+							}
+							Mua_1806 = driverVPS.findElement(By.id(HD));
+							Ban_1806 = driverVPS.findElement(By.id(HD1));
+							Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
 
-						txtCL_TREN.setText("");
-						CL_N_TREN.setSelected(true);
-						if (!tglbtnShowHistory.isSelected()) {
-							tglbtnShowHistory.doClick();
+							js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
+
+							js.executeScript("document.getElementById('right_price').value="
+									+ Double.valueOf(lblShow.getText()) + ";");
+
+							MuaButton = driverVPS.findElement(By.xpath(Muaxpath));
+							js.executeScript("arguments[0].click();", MuaButton);
+							
+						}else {
+							ButtonATC=driverVPS.findElement(By.xpath(ATCxpath));
+							js.executeScript("arguments[0].click();", ButtonATC);
+							
+							MuaButton = driverVPS.findElement(By.xpath(Muaxpath));
+							js.executeScript("arguments[0].click();", MuaButton);
 						}
-						Mua_1806 = driverVPS.findElement(By.id(HD));
-						Ban_1806 = driverVPS.findElement(By.id(HD1));
-						Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
-
-						js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
-
-						js.executeScript("document.getElementById('right_price').value="
-								+ Double.valueOf(lblShow.getText()) + ";");
-
-						MuaButton = driverVPS.findElement(By.xpath(Muaxpath));
-						js.executeScript("arguments[0].click();", MuaButton);
-						hien_danhSach_lenh = true;
 					} catch (Exception eMua) {
-						
+
+					}
+					if (!tglbtnShowHistory.isSelected()) {
+						hien_danhSach_lenh = false;
+						tglbtnShowHistory.doClick();
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -807,41 +816,68 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnMuaK.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnMuaK.setForeground(new Color(0, 100, 0));
-		
-		JPopupMenu popupMenu_1 = new JPopupMenu();
-		addPopup(btnMuaK, popupMenu_1);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("ATC");
-		popupMenu_1.add(mntmNewMenuItem);
+
+		JPopupMenu popupMenu_MUA_ATC = new JPopupMenu();
+		addPopup(btnMuaK, popupMenu_MUA_ATC);
+
+		JMenuItem mnItem_Mua_ATC = new JMenuItem("ATC");
+		mnItem_Mua_ATC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MUA_ATC = !MUA_ATC;
+				if (MUA_ATC) {
+					btnMuaK.setText("ATC");
+				}
+
+			}
+		});
+		popupMenu_MUA_ATC.add(mnItem_Mua_ATC);
+
+		JMenuItem mnItem_Mua_ATC_NONE = new JMenuItem("NONE");
+		mnItem_Mua_ATC_NONE.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MUA_ATC = false;
+			}
+		});
+		popupMenu_MUA_ATC.add(mnItem_Mua_ATC_NONE);
 
 		final JButton btnBanK = new JButton("");
 		btnBanK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				if (enableKeyBoard) {
-
+					BanButton = driverVPS.findElement(By.xpath(Banxpath));
 					try {
-						txtCL_TREN.setText("");
-						CL_N_TREN.setSelected(true);
+						if (BAN_ATC == false) {
+							txtCL_TREN.setText("");
+							CL_N_TREN.setSelected(true);
 
-						if (!tglbtnShowHistory.isSelected()) {
-							tglbtnShowHistory.doClick();
-						}
-						Mua_1806 = driverVPS.findElement(By.id(HD));
-						Ban_1806 = driverVPS.findElement(By.id(HD1));
-						Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
+							if (!tglbtnShowHistory.isSelected()) {
+								tglbtnShowHistory.doClick();
+							}
+							Mua_1806 = driverVPS.findElement(By.id(HD));
+							Ban_1806 = driverVPS.findElement(By.id(HD1));
+							Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
 
-						js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
+							js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
 
-						js.executeScript("document.getElementById('right_price').value="
-								+ Double.valueOf(lblShow.getText()) + ";");
-
-						BanButton = driverVPS.findElement(By.xpath(Banxpath));
-						js.executeScript("arguments[0].click();", BanButton);
-
-						hien_danhSach_lenh = true;
-					} catch (Exception eBan) {
+							js.executeScript("document.getElementById('right_price').value="
+									+ Double.valueOf(lblShow.getText()) + ";");
 						
+							js.executeScript("arguments[0].click();", BanButton);
+
+							
+						}else {
+							ButtonATC=driverVPS.findElement(By.xpath(ATCxpath));
+							js.executeScript("arguments[0].click();", ButtonATC);
+							js.executeScript("arguments[0].click();", BanButton);
+
+						}
+					} catch (Exception eBan) {
+
+					}
+					if (!tglbtnShowHistory.isSelected()) {
+						hien_danhSach_lenh = false;
+						tglbtnShowHistory.doClick();
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -913,12 +949,30 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnBanK.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnBanK.setForeground(new Color(255, 0, 0));
-		
-		JPopupMenu popupMenu_2 = new JPopupMenu();
-		addPopup(btnBanK, popupMenu_2);
-		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("ATC");
-		popupMenu_2.add(mntmNewMenuItem_1);
+
+		JPopupMenu popupMenu_BAN_ATC = new JPopupMenu();
+		addPopup(btnBanK, popupMenu_BAN_ATC);
+
+		JMenuItem mnItem_Ban_ATC = new JMenuItem("ATC");
+		mnItem_Ban_ATC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BAN_ATC = !BAN_ATC;
+				if (BAN_ATC) {
+					btnBanK.setText("ATC");
+				}
+
+			}
+
+		});
+		popupMenu_BAN_ATC.add(mnItem_Ban_ATC);
+
+		JMenuItem mnItem_Ban_ATC_NONE = new JMenuItem("NONE");
+		mnItem_Ban_ATC_NONE.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BAN_ATC = false;
+			}
+		});
+		popupMenu_BAN_ATC.add(mnItem_Ban_ATC_NONE);
 		btnMAK_MUA.setBounds(146, 70, 70, 23);
 		panel.add(btnMAK_MUA);
 		btnMAK_MUA.addMouseListener(new MouseAdapter() {
@@ -944,7 +998,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							tglbtnShowHistory.doClick();
 						}
 					} catch (Exception eMua) {
-						
+
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -982,7 +1036,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						}
 						;
 					} catch (Exception eBan) {
-						
+
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -1175,7 +1229,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						}
 					}
 				} catch (Exception eDong) {
-				
+
 				}
 			}
 
@@ -1237,7 +1291,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						}
 					}
 				} catch (Exception eDong) {
-				
+
 				}
 
 			}
@@ -1298,13 +1352,16 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				}
 				WebElement element = driverVPS.findElement(By.xpath(Huyxpath));
 				js.executeScript("arguments[0].click();", element);
-
+				if (!tglbtnShowHistory.isSelected()) {
+					hien_danhSach_lenh = false;
+					tglbtnShowHistory.doClick();
+				}
 				// WebElement confirm = modal_price
 				// .findElement(By.xpath("//*[@id=\"acceptCreateOrder\"]"));
 				// js.executeScript("arguments[0].click();", confirm);
-				WebElement close = driverVPS.findElement(By.xpath("//*[@id=\"confirmModal\"]/div/div/div[1]/button"));
-				js.executeScript("arguments[0].click();", close);
-				
+				// WebElement close =
+				// driverVPS.findElement(By.xpath("//*[@id=\"confirmModal\"]/div/div/div[1]/button"));
+				// js.executeScript("arguments[0].click();", close);
 
 			}
 		});
@@ -1342,7 +1399,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							hien_danhSach_lenh = false;
 							tglbtnShowHistory.doClick();
 						}
-						
+
 						if (tontaiHD == 1) {
 
 							sohd_daonguoc = Math.abs(Integer.parseInt(hdk.getText())) * 2;
@@ -1382,7 +1439,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						}
 					}
 				} catch (Exception eRV) {
-					
+
 				}
 			}
 
@@ -1457,10 +1514,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						} else {
 							lblTB.setText("Khong ton tai HD");
 						}
-						
+
 					}
 				} catch (Exception eRV) {
-					
+
 				}
 
 			}
@@ -1489,7 +1546,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				double steps = e.getWheelRotation();
 				if (!txtCL_DUOI.getText().isEmpty()) {
 					if (steps == 1) {
-						
 
 						txtCL_TREN.setText(String.valueOf(df.format(Double.valueOf(txtCL_TREN.getText()) - 0.1)));
 						txtCL_DUOI.setText(String.valueOf(df.format(Double.valueOf(txtCL_DUOI.getText()) + 0.1)));
@@ -1884,7 +1940,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		tglbtnShowList.setBounds(76, 124, 65, 20);
 		panel.add(tglbtnShowList);
 
-		
 		tglbtnAuto.setBounds(147, 124, 70, 21);
 		panel.add(tglbtnAuto);
 
@@ -1962,7 +2017,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				Point b = a.getLocation();
 				btnAction.setBackground(Color.WHITE);
 				if (CountAction == 1) {
-					
+
 					btnAction.setForeground(Color.BLACK);
 					MStart_X = (int) b.getX();
 					MStart_Y = (int) b.getY();
@@ -2022,7 +2077,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								js.executeScript("arguments[0].click();", MuaButton);
 
 							} catch (Exception eMua) {
-							
+
 							}
 
 							// -------------
@@ -2050,7 +2105,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								js.executeScript("arguments[0].click();", BanButton);
 
 							} catch (Exception eBan) {
-								
+
 							}
 
 							// -----------------
@@ -2066,7 +2121,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						btnAction.setText("reset");
 						CountAction = 0;
 
-					}else {
+					} else {
 						lblTB1.setText("keyboard disabled");
 					}
 				}
@@ -2203,7 +2258,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						hien_danhSach_lenh = true;
 
 					} catch (Exception eMua) {
-						
+
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -2295,7 +2350,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 						hien_danhSach_lenh = true;
 					} catch (Exception eBan) {
-						
+
 					}
 				} else {
 					lblTB.setText("Keyboard disable");
@@ -2311,7 +2366,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		Refresh.addActionListener(new ActionListener() {
 			@SuppressWarnings("removal")
 			public void actionPerformed(ActionEvent e) {
-				hien_danhSach_lenh=true;
+				hien_danhSach_lenh = true;
 				tglbtnShowHistory.doClick();
 				driverVPS.navigate().refresh();
 
@@ -2324,50 +2379,46 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 					thread.suspend();
 					js.executeScript("document.getElementById('sohopdong').value=" + SHD.getText() + ";");
 					js.executeScript("document.body.style.zoom = '50%';");
-			/*
-					if (textGiaKhop.getText() != "") {
-						if (tontaiHD == 0) { // SHORT
-							js.executeScript("document.getElementById('right_price').value="
-									+ df.format(Double.valueOf(textGiaKhop.getText()) + 3) + ";");
-
-							js.executeScript("arguments[0].click();", BanButton);
-							js.executeScript("document.body.style.zoom = '80%';");
-						}
-
-						if (tontaiHD == 1) { // SHORT, --> LONG
-							js.executeScript("document.getElementById('right_price').value="
-									+ df.format(Double.valueOf(textGiaKhop.getText()) - 3) + ";");
-
-							js.executeScript("arguments[0].click();", MuaButton);
-							js.executeScript("document.body.style.zoom = '80%';");
-						}
-
-						if (tontaiHD == 2) { // LONG, --> SHORT
-							js.executeScript("document.getElementById('right_price').value="
-									+ df.format(Double.valueOf(textGiaKhop.getText()) + 3) + ";");
-							js.executeScript("arguments[0].click();", BanButton);
-							js.executeScript("document.body.style.zoom = '80%';");
-						}
-
-						WebElement PIN = driverVPS.findElement(By.xpath("//*[@id=\"account_pin_cd\"]"));
-						PIN.sendKeys("Nh@ngoc123");
-
-						WebElement save = driverVPS.findElement(By.xpath("//*[@id=\"account_save_pin\"]"));
-						js.executeScript("arguments[0].click();", save);
-
-					}
-					*/
+					/*
+					 * if (textGiaKhop.getText() != "") { if (tontaiHD == 0) { // SHORT
+					 * js.executeScript("document.getElementById('right_price').value=" +
+					 * df.format(Double.valueOf(textGiaKhop.getText()) + 3) + ";");
+					 * 
+					 * js.executeScript("arguments[0].click();", BanButton);
+					 * js.executeScript("document.body.style.zoom = '80%';"); }
+					 * 
+					 * if (tontaiHD == 1) { // SHORT, --> LONG
+					 * js.executeScript("document.getElementById('right_price').value=" +
+					 * df.format(Double.valueOf(textGiaKhop.getText()) - 3) + ";");
+					 * 
+					 * js.executeScript("arguments[0].click();", MuaButton);
+					 * js.executeScript("document.body.style.zoom = '80%';"); }
+					 * 
+					 * if (tontaiHD == 2) { // LONG, --> SHORT
+					 * js.executeScript("document.getElementById('right_price').value=" +
+					 * df.format(Double.valueOf(textGiaKhop.getText()) + 3) + ";");
+					 * js.executeScript("arguments[0].click();", BanButton);
+					 * js.executeScript("document.body.style.zoom = '80%';"); }
+					 * 
+					 * WebElement PIN =
+					 * driverVPS.findElement(By.xpath("//*[@id=\"account_pin_cd\"]"));
+					 * PIN.sendKeys("Nh@ngoc123");
+					 * 
+					 * WebElement save =
+					 * driverVPS.findElement(By.xpath("//*[@id=\"account_save_pin\"]"));
+					 * js.executeScript("arguments[0].click();", save);
+					 * 
+					 * }
+					 */
 					frmRubbyMoney.setTitle(" check page loaded,");
-					untilPageLoadComplete(driverVPS,20) ;
-					frmRubbyMoney.setTitle(frmRubbyMoney.getTitle()+" click show history ...");
-					WebElement showhd = driverVPS
-							.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
+					untilPageLoadComplete(driverVPS, 20);
+					frmRubbyMoney.setTitle(frmRubbyMoney.getTitle() + " click show history ...");
+					WebElement showhd = driverVPS.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
 					js.executeScript("arguments[0].click();", showhd);
 					thread.resume();
 				} catch (NoSuchElementException e1) {
 				}
 
-			
 			}
 		});
 		Refresh.setBounds(130, 229, 16, 17);
@@ -2375,7 +2426,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		Refresh.setBackground(new Color(144, 238, 144));
 		Refresh.setToolTipText("Refresh");
 
-		
 		Refresh.setFont(new Font("Tahoma", Font.PLAIN, 6));
 
 		JLabel lblDong_1_2_1 = new JLabel("refresh");
@@ -2499,8 +2549,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		btnClear.setForeground(Color.RED);
 		btnClear.setFont(new Font("Tahoma", Font.BOLD, 8));
-		
-		
+
 		panel_info.setBackground(Color.BLACK);
 		panel_info.setBounds(400, 201, 79, 48);
 		panel.add(panel_info);
@@ -2509,14 +2558,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel_info.add(lblHDK);
 		lblHDK.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblHDK.setForeground(Color.WHITE);
-		
-				JButton btnNewButton_2 = new JButton("");
-				btnNewButton_2.setBounds(0, 19, 76, 7);
-				panel_info.add(btnNewButton_2);
-				lblSM.setBounds(0, 34, 76, 14);
-				panel_info.add(lblSM);
-				lblSM.setHorizontalAlignment(SwingConstants.CENTER);
-				lblSM.setForeground(Color.WHITE);
+
+		JButton btnNewButton_2 = new JButton("");
+		btnNewButton_2.setBounds(0, 19, 76, 7);
+		panel_info.add(btnNewButton_2);
+		lblSM.setBounds(0, 34, 76, 14);
+		panel_info.add(lblSM);
+		lblSM.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSM.setForeground(Color.WHITE);
 		btnNewButton_4_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -2539,7 +2588,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							}
 
 						} catch (InterruptedException e1) {
-						
+
 							e1.printStackTrace();
 						}
 						colunm_HeadStock = new Vector();
@@ -2575,7 +2624,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							}
 							frmRubbyMoney.setTitle("List Ready...");
 						} catch (IOException e) {
-							
+
 							e.printStackTrace();
 						}
 
@@ -2650,21 +2699,20 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnSetup.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-		
+
 				Runnable StockThread = new Runnable() {
 
 					public void run() {
 						js = (JavascriptExecutor) driverStock;
-						
+
 						driverStock.switchTo().defaultContent();
 
-				
 						try {
 							setupChart("iframe_left", 0, typeColor);
 							Thread.sleep(200);
 							setupChart("iframe_right", 0, typeColor);
-							//Thread.sleep(300);
-							//setupChart("iframe_bottom", 0, typeColor);
+							// Thread.sleep(300);
+							// setupChart("iframe_bottom", 0, typeColor);
 						} catch (InterruptedException e) {
 
 							e.printStackTrace();
@@ -2696,8 +2744,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						driverStock.manage().window().setSize(n);
 						;
 
-					
-						
 						// driverStock.switchTo().frame(driverStock.findElement(By.xpath("//*[contains(@id,'tradingview')]")));
 					} // Thread
 				};
@@ -2820,7 +2866,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							driverVPS.findElement(By.xpath("//*[@id=\"form-login\"]/div[2]/div[7]/button[1]")).click();
 							js = (JavascriptExecutor) driverVPS;
 							frmRubbyMoney.setTitle(" pass login input...");
-							untilPageLoadComplete(driverVPS,20) ;
+							untilPageLoadComplete(driverVPS, 20);
 							frmRubbyMoney.setTitle(" page loaded ...");
 							// -----------
 							Thread.sleep(200);
@@ -2850,19 +2896,19 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							 */
 							GIA_VN30New = (Float
 									.valueOf(Float.parseFloat((String) vn30New.getText().replaceAll(",", ""))))
-											.floatValue();
+									.floatValue();
 
 							try {
 
 								GIA_MUA = (Float
 										.valueOf(Float.parseFloat((String) Mua_1806.getText().replaceAll(",", ""))))
-												.floatValue();
+										.floatValue();
 								GIA_BAN = (Float
 										.valueOf(Float.parseFloat((String) Ban_1806.getText().replaceAll(",", ""))))
-												.floatValue();
+										.floatValue();
 								GIA_KHOP = (Float
 										.valueOf(Float.parseFloat((String) Gia_khop.getText().replaceAll(",", ""))))
-												.floatValue();
+										.floatValue();
 
 							} catch (NumberFormatException e) {
 
@@ -2916,31 +2962,28 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 								WebElement save = modal_price.findElement(By.xpath("//*[@id=\"account_save_pin\"]"));
 								js.executeScript("arguments[0].click();", save);
-								
+
 								frmRubbyMoney.setTitle("Finish config ....");
-								
-								
+
 							} catch (NoSuchElementException e1) {
 
 							} catch (IllegalThreadStateException e) {
 								frmRubbyMoney.setTitle("IllegalThreadStateException");
-										 }
+							}
 							// -----------
 
-							
 							// driver.get(baseUrl);
 
 						} catch (Exception eDriver) {
-						
 
 							eDriver.printStackTrace();
 						}
 						WebElement showhd = driverVPS
 								.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
 						js.executeScript("arguments[0].click();", showhd);
-				
+
 						frmRubbyMoney.setTitle(" click show history ...");
-						
+
 						frmRubbyMoney.setTitle(title + " - for ....");
 						// js.executeScript("document.body.style.zoom = '30%';");
 						// -------------------------------------------
@@ -2965,7 +3008,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 									GIA_VN30New = (Float
 											.valueOf(Float.parseFloat((String) vn30New.getText().replaceAll(",", ""))))
-													.floatValue();
+											.floatValue();
 
 								}
 
@@ -2994,14 +3037,12 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											iconn.connect();
 											Iconn.setForeground(Color.GREEN);
 											Iconn.setText("Ic");
-											
 
 										} catch (Exception e) {
 											Iconn.setForeground(Color.RED);
 											Iconn.setText("Id");
 
 										}
-										
 
 										try {
 											connect = driverVPS
@@ -3020,71 +3061,71 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 										}
 										// -----------
 
-										
-
 										try {
 											WebElement info = null;
-										
+
 											WebElement Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
-										
+
 											WebElement Mua_1806 = driverVPS.findElement(By.id(HD));
 											WebElement Ban_1806 = driverVPS.findElement(By.id(HD1));
-											
-												
-											String Mua=Mua_1806.getText();String Ban=Ban_1806.getText();
-											String Khop=Gia_khop.getText();
-											
-											if(Mua.isEmpty()&&!Ban.isEmpty()) {
-												Mua=Ban;
+
+											String Mua = Mua_1806.getText();
+											String Ban = Ban_1806.getText();
+											String Khop = Gia_khop.getText();
+
+											if (Mua.isEmpty() && !Ban.isEmpty()) {
+												Mua = Ban;
 												System.out.println("go here 2");
 											}
-											if(Ban.isEmpty()&&!Mua.isEmpty()) {
-												Ban=Mua;
+											if (Ban.isEmpty() && !Mua.isEmpty()) {
+												Ban = Mua;
 											}
 											/*
-											System.out.println("Gia_khop : "+Gia_khop.getText());
-											System.out.println("-----");
-											System.out.println("Mua_1806 : "+Mua);
-											System.out.println("-----");
-											System.out.println("Ban_1806 : "+Ban);
-											*/
-										
-											GIA_KHOP = (Float.valueOf(Float.parseFloat(
-													(String) Khop.replaceAll(",", ""))))
-															.floatValue();
-											if (dongbang==false) {
-												System.out.println(">>khong dong bang");
-											textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
-											}
-											
-											try {
-												if ((!Mua.equals("ATO"))
-														&& (!Mua.equals("ATC"))) {
-													
-													GIA_BAN_REAL = (Float.valueOf(Float.parseFloat(
-															(String) Mua.replaceAll(",", ""))))
-																	.floatValue();
-													
-													GIA_MUA_REAL = (Float.valueOf(Float.parseFloat(
-															(String) Ban.replaceAll(",", ""))))
-																	.floatValue();
-													if (!dongbang) {
-														
-														btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
-														btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
-													
-													}
+											 * System.out.println("Gia_khop : "+Gia_khop.getText());
+											 * System.out.println("-----"); System.out.println("Mua_1806 : "+Mua);
+											 * System.out.println("-----"); System.out.println("Ban_1806 : "+Ban);
+											 */
 
+											GIA_KHOP = (Float
+													.valueOf(Float.parseFloat((String) Khop.replaceAll(",", ""))))
+													.floatValue();
+											if (dongbang == false) {
+												System.out.println(">>khong dong bang");
+												textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
+											}
+
+											try {
+												if ((!Mua.equals("ATO")) && (!Mua.equals("ATC"))) {
+
+													GIA_BAN_REAL = (Float.valueOf(
+															Float.parseFloat((String) Mua.replaceAll(",", ""))))
+															.floatValue();
+
+													GIA_MUA_REAL = (Float.valueOf(
+															Float.parseFloat((String) Ban.replaceAll(",", ""))))
+															.floatValue();
+													if (MUA_ATC == false) {
+														if (!dongbang) {
+															btnMuaK.setText(String.valueOf(df.format(GIA_BAN_REAL)));
+														}
+													}
+													if (BAN_ATC == false) {
+														if (!dongbang) {
+
+															btnBanK.setText(String.valueOf(df.format(GIA_MUA_REAL)));
+
+														}
+													}
 
 												}
 											} catch (NoSuchElementException e) {
 												frmRubbyMoney.setTitle("NoSuchElementException 3031");
-											} 
-											
+											}
+
 											catch (NumberFormatException e2) {
 
 												frmRubbyMoney.setTitle("NumberFormatException 3036");
-											
+
 											}
 
 											try {
@@ -3130,7 +3171,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 												e.printStackTrace();
 											}
 
-											
 											if (hien_danhSach_lenh) {
 												// js.executeScript(
 												// "document.getElementById('footerPanel').style.display='block';");
@@ -3203,7 +3243,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 												GIA_VN30New = (Float.valueOf(Float
 														.parseFloat((String) vn30New.getText().replaceAll(",", ""))))
-																.floatValue();
+														.floatValue();
 
 											}
 
@@ -3360,18 +3400,19 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 												}
 											}
-										
+
 											// -------------------BREAK ------------------------------
 											if (chckBreak.isSelected()) {
 												// -------------------------TREN
 
 												if (buttonGroupCL_TREN.getSelection().getActionCommand()
 														.equals("CLMua_TREN") && (txtCL_TREN.getText().length() > 1)) {
-												
-													if (Double.valueOf(textGiaKhop.getText()) >= Double.valueOf(txtCL_TREN.getText()) ){
+
+													if (Double.valueOf(textGiaKhop.getText()) >= Double
+															.valueOf(txtCL_TREN.getText())) {
 														Order_special("M", "MTL");
 														CL_N_TREN.setSelected(true);
-														lblTB.setText("MUA BRAEK - " );
+														lblTB.setText("MUA BRAEK - ");
 														chckBreak.setSelected(false);
 														timerLB = new javax.swing.Timer(500,
 																new MYFORM.LbBlink(lblTB, "red"));
@@ -3385,8 +3426,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 												if (buttonGroupCL_DUOI.getSelection().getActionCommand()
 														.equals("CLBan_DUOI") && (txtCL_DUOI.getText().length() > 1)) {
-													
-													if (Double.valueOf(textGiaKhop.getText()) <= Double.valueOf(txtCL_DUOI.getText())) {
+
+													if (Double.valueOf(textGiaKhop.getText()) <= Double
+															.valueOf(txtCL_DUOI.getText())) {
 														Order_special("B", "MTL");
 														CL_N_TREN.setSelected(true);
 														lblTB.setText("BAN BREAK - ");
@@ -3397,7 +3439,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														timerLB.start();
 
 														txtCL_TREN.setText("");
-														
+
 													}
 												}
 												// -----------------------------DUOI
@@ -3473,15 +3515,15 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 										} catch (StaleElementReferenceException eStaleElementReferenceException) {
 											System.out.println("StaleElementReferenceException ...");
-											
+
 											retryNeeded = true;
 
 											break;
 										} catch (NumberFormatException eNumberFormatException) {
 											retryNeeded = true;
-										
+
 										}
-									
+
 									} while (retryNeeded);
 
 									if (!dn) {
@@ -3569,12 +3611,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 					WebElement parent = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
 					jss.executeScript("arguments[0].scrollIntoView();", parent);
 				}
-				if (typeChart == 2) {
-
-					WebElement cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
-					jss.executeScript("arguments[0].scrollIntoView();", cRight);
-
-				}
+				/*
+				 * if (typeChart == 2) {
+				 * 
+				 * WebElement cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
+				 * jss.executeScript("arguments[0].scrollIntoView();", cRight);
+				 * 
+				 * }
+				 */
 
 				if (typeChart == 3) {
 					WebElement MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
@@ -3772,7 +3816,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						 */
 					}
 				} catch (Exception eLayHD) {
-				
+
 				}
 			}
 
@@ -3815,7 +3859,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		colunm_HeadHistory.addElement("Price");
 		colunm_HeadHistory.addElement("ChuaK");
 		colunm_HeadHistory.addElement("Time");
-	//	ImageIcon img = new ImageIcon("c:/jar/javalogo.png");
+		// ImageIcon img = new ImageIcon("c:/jar/javalogo.png");
 
 		/*
 		 * JTextArea textArea = new JTextArea(15, 30); JScrollPane scroll = new
@@ -4485,24 +4529,24 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			WebElement MRight = null;
 			showchart = !showchart;
 			// CHECK , UNCHECK CAP CAP CAP
-			
+
 			try {
 				if (showtradeview) {
 
 					JavascriptExecutor js = (JavascriptExecutor) driverStock;
 
 					/*
-					
-						element = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
-						pic = driverStock.findElement(By.xpath("//*[@id=\"pic\"]"));
-						cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
-						MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
-				*/
+					 * 
+					 * element = driverStock.findElement(By.xpath("//*[@id=\"parent\"]")); pic =
+					 * driverStock.findElement(By.xpath("//*[@id=\"pic\"]")); cRight =
+					 * driverStock.findElement(By.xpath("//*[@id=\"Cright\"]")); MRight =
+					 * driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
+					 */
 
 					element = driverStock.findElement(By.id("parent"));
 					pic = driverStock.findElement(By.id("pic"));
-					cRight = driverStock.findElement(By.id("Cright"));
-					MRight = driverStock.findElement(By.id("Mright"));
+					// cRight = driverStock.findElement(By.id("Cright"));
+					// MRight = driverStock.findElement(By.id("Mright"));
 
 					// panel_logo.setVisible(!showchart);
 
@@ -4513,10 +4557,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							frmRubbyMoney.setBounds(100, 100, 484, 288);
 							frmRubbyMoney.setLocation(550, 350);
 							SHD.setBounds(303, 95, 30, 20);
-						
-							
-							lblTB.setLocation(1,30);
-							tglbtnAuto.setLocation(147,124);
+
+							lblTB.setLocation(1, 30);
+							tglbtnAuto.setLocation(147, 124);
 							SHD.setLocation(371, 95);
 							txtAuto.setLocation(371, 119);
 							panel_info.setLocation(400, 201);
@@ -4526,24 +4569,23 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 							frmRubbyMoney.setBounds(100, 250, 484, 288);
 							frmRubbyMoney.setLocation(700, 250);
-							lblTB.setLocation(1,30);
-							tglbtnAuto.setLocation(147,124);
+							lblTB.setLocation(1, 30);
+							tglbtnAuto.setLocation(147, 124);
 							SHD.setLocation(371, 95);
 							txtAuto.setLocation(371, 119);
 							panel_info.setLocation(400, 201);
 						}
 					} else {
-					
-						frmRubbyMoney.setTitle("Java loading ....");  //MINIMIZE
+
+						frmRubbyMoney.setTitle("Java loading ...."); // MINIMIZE
 						frmRubbyMoney.setBounds(100, 100, 484, 130);
 						frmRubbyMoney.setLocation(888, 603);
-						lblTB.setLocation(14,61);
-						tglbtnAuto.setLocation(23,30);
+						lblTB.setLocation(14, 61);
+						tglbtnAuto.setLocation(23, 30);
 						SHD.setLocation(371, 44);
 						txtAuto.setLocation(371, 65);
-					
+
 						panel_info.setLocation(400, 38);
-					
 
 					}
 
@@ -4573,41 +4615,37 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						js.executeScript("arguments[0].scrollIntoView();", pic);
 					}
 				} else {
-					if (!showchart) { //khong show tradeview chart , miniz
+					if (!showchart) { // khong show tradeview chart , miniz
 						System.out.println("2");
 						frmRubbyMoney.setTitle("Java loading ....");
 						frmRubbyMoney.setBounds(100, 100, 484, 130);
 						frmRubbyMoney.setLocation(888, 603);
-						lblTB.setLocation(14,61);
-						tglbtnAuto.setLocation(23,30);
+						lblTB.setLocation(14, 61);
+						tglbtnAuto.setLocation(23, 30);
 						SHD.setLocation(371, 44);
 						txtAuto.setLocation(371, 65);
-					
+
 						panel_info.setLocation(400, 38);
-						
-					
+
 					} else {
-						frmRubbyMoney.setTitle("Rubby money");  //khong show tradeview chart , max
+						frmRubbyMoney.setTitle("Rubby money"); // khong show tradeview chart , max
 
 						frmRubbyMoney.setBounds(100, 250, 484, 288);
 						frmRubbyMoney.setLocation(870, 450);
-						lblTB.setLocation(1,30);
-						tglbtnAuto.setLocation(147,124);
+						lblTB.setLocation(1, 30);
+						tglbtnAuto.setLocation(147, 124);
 						SHD.setLocation(371, 95);
 						txtAuto.setLocation(371, 119);
 						panel_info.setLocation(400, 201);
 
-						
 					}
-					
-					
+
 				}
 			} catch (NoSuchElementException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
-			
 		} // if
 		if (e.getKeyCode() == NativeKeyEvent.VC_X) {
 			enableKeyBoard = !enableKeyBoard;
@@ -4726,9 +4764,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	}
 
 	public void nativeMouseMoved(NativeMouseEvent arg0) {
-		
+
 		int MIN = 79, MAX = 329;
-		boolean next=false,back=false;
+		boolean next = false, back = false;
 		PointerInfo a = MouseInfo.getPointerInfo();
 		Point b = a.getLocation();
 		int khoan_cach, chieudai = 64;
@@ -4737,10 +4775,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		if (CountAction == 1) {
 			if (!switchStep) {
 				// if ((int) b.getX() > MStart_X) {
-				
+
 				try {
 					khoan_cach = ((int) b.getX() - MStart_X);
-					if (khoan_cach < 400 && khoan_cach>0) {
+					if (khoan_cach < 400 && khoan_cach > 0) {
 						cuongDo = (Double) b.getX() - MStart_X;
 
 						btnAction.setLocation(BStart_X + khoan_cach, BStart_Y);
@@ -4771,8 +4809,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		}
 
 		if (btnAction.getBounds().x > MAX) {
-			
-			switchStep=true;next=true;
+
+			switchStep = true;
+			next = true;
 			MEnd_X = (int) b.getX();
 			MEnd_Y = (int) b.getY();
 			txtAction_Price = lblShow.getText();
@@ -4790,10 +4829,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			} catch (Exception e) {
 
 			}
-			switchStep=false;
+			switchStep = false;
 		}
 
-		
 	}
 	/*
 	 * } if(btnAction.getBounds().x<MIN) { back=true;
@@ -4871,7 +4909,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		}
 	}
 
-
 	private static void activate(int pid) throws IOException {
 		String pathname = System.getProperty("java.io.tmpdir") + "WindowSwintcherAppActivate.vbs";
 
@@ -4879,7 +4916,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		if (!file.exists()) {
 			String content = "set WshShell = CreateObject(\"WScript.Shell\")\n"
 					+ "WshShell.AppActivate Wscript.Arguments(0)";
-			//FileUtils.writeStringToFile(file, content);
+			// FileUtils.writeStringToFile(file, content);
 		}
 		Runtime.getRuntime().exec("cscript " + pathname + " " + pid);
 	}
@@ -5002,7 +5039,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		driverStock.switchTo().frame(F2);
 
-		 setupBackground(typeColor);
+		setupBackground(typeColor);
 
 		driverStock.findElement(By.id("header-toolbar-indicators")).click();
 		try {
@@ -5020,15 +5057,17 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			Thread.sleep(50);
 			driverStock.findElement(By.xpath(StrClose)).click();
 			Thread.sleep(50);
-	/*
-			driverStock.findElement(By.xpath("/html/body/div[1]/div[1]/div/div[1]/div[3]/table/tbody/tr[7]/td[2]/div/div[3]/div/span[2]/a[2]/svg/path")).click();
-			Thread.sleep(100);
-			driverStock.findElement(By.xpath("/html/body/div[4]/div[4]/div[3]/table[1]/tbody/tr[1]/td[3]/span/input")).click();
-			Thread.sleep(100);
-			driverStock.findElement(By.xpath("/html/body/div[5]/div[1]/table[1]/tbody/tr/td[10]/div/div")).click();
-			Thread.sleep(100);
-			driverStock.findElement(By.xpath("/html/body/div[4]/div[4]/div[4]/div/a[2]")).click();
-      */
+			/*
+			 * driverStock.findElement(By.xpath(
+			 * "/html/body/div[1]/div[1]/div/div[1]/div[3]/table/tbody/tr[7]/td[2]/div/div[3]/div/span[2]/a[2]/svg/path"
+			 * )).click(); Thread.sleep(100); driverStock.findElement(By.xpath(
+			 * "/html/body/div[4]/div[4]/div[3]/table[1]/tbody/tr[1]/td[3]/span/input")).
+			 * click(); Thread.sleep(100); driverStock.findElement(By.xpath(
+			 * "/html/body/div[5]/div[1]/table[1]/tbody/tr/td[10]/div/div")).click();
+			 * Thread.sleep(100);
+			 * driverStock.findElement(By.xpath("/html/body/div[4]/div[4]/div[4]/div/a[2]"))
+			 * .click();
+			 */
 			if (F1 == "iframe_left") {
 
 				driverStock.findElement(By.id("header-toolbar-intervals")).click();
@@ -5117,8 +5156,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		}
 	}
 
-	
-
 	public class ImagePanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 		private BufferedImage image;
@@ -5177,28 +5214,30 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			}
 		});
 	}
+
 	@SuppressWarnings("deprecation")
-	private static void until(WebDriver driver, Function<WebDriver, Boolean> waitCondition, int timeoutInSeconds){
+	private static void until(WebDriver driver, Function<WebDriver, Boolean> waitCondition, int timeoutInSeconds) {
 		WebDriverWait webDriverWait = new WebDriverWait(driver, timeoutInSeconds);
 		webDriverWait.withTimeout(timeoutInSeconds, TimeUnit.SECONDS);
-		try{
+		try {
 			webDriverWait.until(waitCondition);
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}          
+		}
 	}
-	public static void untilPageLoadComplete(WebDriver driver, int i){
-		until(driver, (d) ->
-			{
-				Boolean isPageLoaded = (Boolean)((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
-				if (!isPageLoaded)
-					try {
-						frmRubbyMoney.setTitle("Document is loading");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				return isPageLoaded;
-			}, i);
+
+	public static void untilPageLoadComplete(WebDriver driver, int i) {
+		until(driver, (d) -> {
+			Boolean isPageLoaded = (Boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState")
+					.equals("complete");
+			if (!isPageLoaded)
+				try {
+					frmRubbyMoney.setTitle("Document is loading");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			return isPageLoaded;
+		}, i);
 	}
 }
