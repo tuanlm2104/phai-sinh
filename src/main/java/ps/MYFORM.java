@@ -693,12 +693,24 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									}
 								}
 							}
-						} catch (Exception eHistory) {
+						} catch (StaleElementReferenceException staleElementReferenceException) {
 							// TODO Auto-generated catch block
-							frmRubbyMoney.setTitle("history..." + "bi loi ," + eHistory.getMessage());
-							WebElement showhd = driverVPS
-									.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
-							js.executeScript("arguments[0].click();", showhd);
+							frmRubbyMoney.setTitle("history..." + "bi loi_1: " + staleElementReferenceException.getMessage());
+						
+							try {
+								driverVPS.navigate().refresh();
+								Thread.sleep(100);
+								WebElement showhd = driverVPS
+										.findElement(By.xpath("//*[@id=\"miniIndex\"]/div[2]/span/a[2]/img"));
+								js.executeScript("arguments[0].click();", showhd);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+						}catch (Exception e) {
+							frmRubbyMoney.setTitle("history..." + "bi loi_2 : " + e.getMessage());
+							
 						}
 					}
 				};
@@ -3133,7 +3145,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											 * System.out.println("-----"); System.out.println("Mua_1806 : "+Mua);
 											 * System.out.println("-----"); System.out.println("Ban_1806 : "+Ban);
 											 */
-
+									
 											GIA_KHOP = (Float
 													.valueOf(Float.parseFloat((String) Khop.replaceAll(",", ""))))
 													.floatValue();
@@ -3142,7 +3154,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 												textGiaKhop.setText(String.valueOf(df.format(GIA_KHOP)));
 											}
 
-											try {
+										
 												if ((!Mua.equals("ATO")) && (!Mua.equals("ATC"))) {
 
 													GIA_BAN_REAL = (Float.valueOf(
@@ -3166,15 +3178,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 													}
 
 												}
-											} catch (NoSuchElementException e) {
-												frmRubbyMoney.setTitle("NoSuchElementException 3031");
-											}
-
-											catch (NumberFormatException e2) {
-
-												frmRubbyMoney.setTitle("NumberFormatException 3036");
-
-											}
+										
 
 											try {
 
@@ -3563,7 +3567,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 										} catch (StaleElementReferenceException eStaleElementReferenceException) {
 											System.out.println("StaleElementReferenceException ...");
-
+											driverVPS.navigate().refresh();
 											retryNeeded = true;
 
 											break;
