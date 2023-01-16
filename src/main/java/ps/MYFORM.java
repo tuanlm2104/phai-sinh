@@ -2892,10 +2892,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
 
 									retryNeeded1 = false;
-
+									frmRubbyMoney.setTitle(">>> Loading vps .. ");
 								} catch (NoSuchElementException e) {
-									frmRubbyMoney.setTitle(" ktra load full page & chart ..");
-									frmRubbyMoney.setTitle(" chua lay gia M/B ..");
+									
+									frmRubbyMoney.setTitle(">>> Loading vps ....  ");
 									retryNeeded1 = true;
 								}
 							} while (retryNeeded1);
