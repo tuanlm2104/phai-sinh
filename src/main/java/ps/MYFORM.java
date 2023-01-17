@@ -3116,7 +3116,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 											if (Mua.isEmpty() && !Ban.isEmpty()) {
 												Mua = Ban;
-												frmRubbyMoney.setTitle("mua empty");
+												
 												lblCheck.setText("mua empty");
 												
 											}
