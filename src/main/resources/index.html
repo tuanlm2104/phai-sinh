@@ -6,8 +6,9 @@
 
 <!------ Include the above in your HEAD tag ---------->
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
 <style type="text/css">
 #drag {
 	position: absolute;
@@ -31,12 +32,7 @@
 
 </head>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-   <script>
-        function scroll_Down() {
-            window.scrollTo(0,50);
-        }
-        
-    </script>
+
 <script type="text/javascript">
 	function HideChart() {
 		$(document).ready(function() {
@@ -132,6 +128,36 @@
 		}
 
 	}
+	function displayWC() {
+
+		var layer1 = document.getElementById("layer1");
+		var offsetRight = layer1.offsetWidth;
+		console.log("begin : " + offsetRight);
+		layer1.style.width = offsetRight + 20 + "px";
+		console.log(offsetRight);
+	}
+	function displayWT() {
+		var layer1 = document.getElementById("layer1");
+		var offsetRight = layer1.offsetWidth;
+		console.log("begin : " + offsetRight);
+		layer1.style.width = offsetRight - 20 + "px";
+		console.log(offsetRight)
+	}
+	function displayHC() {
+
+		var layer1 = document.getElementById("layer1");
+		var offsetRight = layer1.offsetHeight;
+		console.log("begin : " + offsetRight);
+		layer1.style.height = offsetRight + 20 + "px";
+		console.log(offsetRight);
+	}
+	function displayHT() {
+		var layer1 = document.getElementById("layer1");
+		var offsetRight = layer1.offsetHeight;
+		console.log("begin : " + offsetRight);
+		layer1.style.height = offsetRight - 20 + "px";
+		console.log(offsetRight)
+	}
 </script>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <body>
@@ -139,24 +165,30 @@
 	<div id="container">
 		<div id="headid"
 			style="width: 1310px; height: 20px; background: black; position: relative; right: 20px;">
-				<button id="btnUP" type="button" onClick="scroll_Down()"
-				style="position: absolute; right: 240px">Down</button>
-			
+
 			<button id="btnLeft" type="button" onClick="displaylayer1()"
-				style="position: absolute; right: 160px">Hide left</button>
+				style="position: absolute; right: 260px">Hide left</button>
 			<button id="btnRight" input type="button" onClick="displaylayer2()"
-				style="position: absolute; right: 80px">Hide right</button>
+				style="position: absolute; right: 180px">Hide right</button>
 			<button id="btnFull" type="button" onClick="displaylayerall()"
-				style="position: absolute; right: 40px">full</button>
+				style="position: absolute; right: 140px">Full</button>
+			<button id="btnFull" type="button" onClick="displayWC()"
+				style="position: absolute; right: 100px">W+</button>
+			<button id="btnFull" type="button" onClick="displayHC()"
+				style="position: absolute; right: 70px">H+</button>
+			<button id="btnFull" type="button" onClick="displayWT()"
+				style="position: absolute; right: 40px">W-</button>
+			<button id="btnFull" type="button" onClick="displayHT()"
+				style="position: absolute; right: 10px">H-</button>
 		</div>
 		<div id="parent" style="visibility: visible; position: relative;">
 
-			<div id="layer1" 
-				style="width: 600px; height: 600px; background: black; position: absolute; display: none; resize: both;overflow: auto;">
-					<div id="drag"></div>
-				<img id="layer1_pic" src="Picture/Picture.PNG"  width=auto height=autos
-					style="display: block; " />
-			
+			<div id="layer1"
+				style="width: 600px; height: 600px; background: black; position: absolute; display: none; resize: both; overflow: auto;">
+				<div id="drag"></div>
+				<img id="layer1_pic" src="Picture/Picture.PNG" width=auto
+					height=autos style="display: block;" />
+
 			</div>
 
 			<div id="layer2" class="resize-both"
@@ -176,7 +208,6 @@
 			<div
 				class="panel panel-primary draggable-panel toolbar-panel ui-draggable ui-resizable"
 				id="left" style="width: 600px; height: 600px; float: left">
-				<!--     <div class="panel-heading lang-panel-header-tools"><i class="fa fa-times pull-right close-panel" id="close-toolbox-tools"></i><i class="fa pull-right fa-chevron-down" id="toggle-toolbox-tools"></i></div>-->
 				<iframe width="100%" height="100%" style="height: 100%; width: 100%"
 					id="iframe_left" class="resizable"
 					src="https://dchart.vndirect.com.vn"></iframe>
@@ -186,7 +217,6 @@
 				<div
 					class="panel panel-primary draggable-panel toolbar-panel ui-draggable ui-resizable"
 					id="right" style="width: 600px; height: 600px;">
-					<!-- <div class="panel-heading lang-panel-header-tools"><i class="fa fa-times pull-right close-panel" id="close-toolbox-tools"></i><i class="fa pull-right fa-chevron-down" id="toggle-toolbox-tools1"></i></div>-->
 					<iframe width="100%" height="100%"
 						style="height: 100%; width: 100%" id="iframe_right"
 						class="resizable" src="https://dchart.vndirect.com.vn"></iframe>
