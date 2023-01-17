@@ -192,6 +192,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	Thread threadstock, threadinfo;
 	@SuppressWarnings("rawtypes")
 	Vector colunm_HeadStock, StockList;
+    
+	
+	@SuppressWarnings("rawtypes")
+	Vector newRecordHistory = null;
+
 	Thread threadStock, threadHD;
 	WebElement span;
 	Runnable countDownThread, HistoryThread, StockInfo;
@@ -356,6 +361,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 	private final JPanel panel = new JPanel();
 	private final JTable tableHistory = new JTable();
+	final DefaultTableModel tableModel = (DefaultTableModel) tableHistory
+			.getModel();
 	private final JScrollPane scrollPaneHistory = new JScrollPane();
 	private final JLabel lblShow = new JLabel("lblShow");
 
@@ -585,6 +592,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		frmRubbyMoney.getContentPane().add(panel);
 
 		panel.setLayout(null);
+		
+		colunm_HeadHistory.addElement("Khop");
+		colunm_HeadHistory.addElement("Type");
+		colunm_HeadHistory.addElement("Status");
+		colunm_HeadHistory.addElement("Price");
+		colunm_HeadHistory.addElement("ChuaK");
+		colunm_HeadHistory.addElement("Time");
+
 
 		tglbtnShowHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -620,9 +635,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 										countme = rowsNumber.size();
 
 										if (countme > 0) {
-											final Vector total_recordHistory = new Vector();
-											Vector newRecordHistory = null;
-
+											Vector total_recordHistory = new Vector();
 											if (rowsNumber.size() > 3) {
 												countme = 3;
 											}
@@ -660,8 +673,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														+ ", rows : " + rowsNumber.size());
 											}
 
-											final DefaultTableModel tableModel = (DefaultTableModel) tableHistory
-													.getModel();
+										
 											SwingUtilities.invokeLater(new Runnable() {
 												public void run() {
 													tableHistory.setModel(new DefaultTableModel(total_recordHistory,
@@ -691,14 +703,24 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									} catch (StaleElementReferenceException staleElementReferenceException) {
 										retryNeededHis = true;
 										counterror = counterror + 1;
-										frmRubbyMoney.setTitle("counterror :" + counterror);
+										frmRubbyMoney.setTitle("counterror 1:" + counterror);
 										if (counterror == 4) {
 											Refresh.doClick();
-											frmRubbyMoney.setTitle(">>> Do refresh action");
+											frmRubbyMoney.setTitle(">>> Do refresh action 1");
 
 										}
 										frmRubbyMoney.setTitle("history..." + ": " + staleElementReferenceException);
 
+									}catch(Exception eh) {
+										counterror = counterror + 1;
+										frmRubbyMoney.setTitle("counterror 2:" + counterror);
+										frmRubbyMoney.setTitle("history error..." + ": " + eh);
+										retryNeededHis = true;
+										if (counterror == 4) {
+											Refresh.doClick();
+											frmRubbyMoney.setTitle(">>> Do refresh action 2");
+
+										}
 									}
 								} while (retryNeededHis);
 							}
@@ -2581,6 +2603,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel_info.add(lblSM);
 		lblSM.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSM.setForeground(Color.WHITE);
+		
+		JLabel lblCheck = new JLabel("Check");
+		lblCheck.setForeground(new Color(255, 255, 255));
+		lblCheck.setBounds(10, 234, 46, 14);
+		panel.add(lblCheck);
 		btnNewButton_4_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -3089,11 +3116,15 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 											if (Mua.isEmpty() && !Ban.isEmpty()) {
 												Mua = Ban;
-												System.out.println("go here 2");
+												frmRubbyMoney.setTitle("mua empty");
+												lblCheck.setText("mua empty");
+												
 											}
 											if (Ban.isEmpty() && !Mua.isEmpty()) {
 												Ban = Mua;
 											}
+											lblCheck.setText("out ok");
+											
 											/*
 											 * System.out.println("Gia_khop : "+Gia_khop.getText());
 											 * System.out.println("-----"); System.out.println("Mua_1806 : "+Mua);
@@ -3132,7 +3163,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 											}
 
-											try {
+										
 
 												info = driverVPS
 														.findElement(By.xpath("//*[@id=\"unrelizeVMAccInfo\"]"));
@@ -3141,7 +3172,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 												hdk = driverVPS.findElement(
 														By.xpath("//*[@id=\"danhmuc_" + HDDay + HDmonth + "\"]/td[2]"));
-
+												
+												sm = driverVPS.findElement(By.xpath("//*[@id=\"sucmua-int\"]"));
+												
 												if (!hdk.getAttribute("style").isEmpty()) { // isBlank
 
 													if (hdk.getAttribute("style").toString().substring(19, 20)
@@ -3162,29 +3195,17 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 												}
 												lblHDK.setText("HD :" + hdk.getText());
 
-											} catch (NoSuchElementException e) {
+											
 
-												tontaiHD = 0;
-												lblHDK.setText("0");
+											/*
+											 * if (hien_danhSach_lenh) { // js.executeScript( //
+											 * "document.getElementById('footerPanel').style.display='block';");
+											 * 
+											 * } else { js.executeScript(
+											 * "document.getElementById('footerPanel').style.display='none';"); }
+											 */
 
-												info = driverVPS
-														.findElement(By.xpath("//*[@id=\"unrelizeVMAccInfo\"]"));
-												lblinfo.setForeground(Color.green);
-												lblinfo.setText(info.getText());
-												sohd_daonguoc = 0;
-												e.printStackTrace();
-											}
-
-											if (hien_danhSach_lenh) {
-												// js.executeScript(
-												// "document.getElementById('footerPanel').style.display='block';");
-
-											} else {
-												js.executeScript(
-														"document.getElementById('footerPanel').style.display='none';");
-											}
-
-											sm = driverVPS.findElement(By.xpath("//*[@id=\"sucmua-int\"]"));
+									
 
 											try {
 
@@ -3490,15 +3511,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											}
 
 										} catch (StaleElementReferenceException eStaleElementReferenceException) {
-											System.out.println("StaleElementReferenceException ...");
-											driverVPS.navigate().refresh();
+											System.out.println("StaleElement ...");
+											
 											retryNeeded = true;
 
-											break;
-										} catch (NumberFormatException eNumberFormatException) {
-											retryNeeded = true;
-
-										}
+										} 
 
 									} while (retryNeeded);
 
@@ -3811,13 +3828,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		lblinfo.setForeground(Color.BLACK);
 		M1 = 1.5;
-		colunm_HeadHistory.addElement("Khop");
-		colunm_HeadHistory.addElement("Type");
-		colunm_HeadHistory.addElement("Status");
-		colunm_HeadHistory.addElement("Price");
-		colunm_HeadHistory.addElement("ChuaK");
-		colunm_HeadHistory.addElement("Time");
-
+	
 	}
 
 	public void ActionMua() throws AWTException {
