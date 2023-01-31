@@ -39,6 +39,8 @@ import com.sun.jna.win32.StdCallLibrary;
 
 import java.awt.Graphics;
 
+import org.apache.log4j.Logger;
+
 //import org.apache.commons.io.FileUtils;
 //import org.apache.http.message.BasicListHeaderIterator;
 
@@ -126,6 +128,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 //import com.google.common.base.Function;
@@ -170,7 +173,7 @@ import java.awt.event.FocusEvent;
 public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, NativeMouseWheelListener {
 	boolean retryNeeded_SL = false, confirm = false, switchStep = false;
 	int countme = 0, counterror, Mfixed_X, Mfixed_Y, MStart_X, MStart_Y, MEnd_X, MEnd_Y, Bfixed_X, Bfixed_Y, BStart_X,
-			BStart_Y, CountAction = 0;
+			BStart_Y, CountAction = 0, TimeCheck = 1;;
 	String checkme1, checkme2, actionChoice = "Mua";
 	String Muaxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[1]/button";
 	String Banxpath = "//*[@id=\"orderPS\"]/div/div[1]/div[2]/button";
@@ -192,8 +195,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	Thread threadstock, threadinfo;
 	@SuppressWarnings("rawtypes")
 	Vector colunm_HeadStock, StockList;
-    
-	
+
 	@SuppressWarnings("rawtypes")
 	Vector newRecordHistory = null;
 
@@ -211,7 +213,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	int CENTER_X, CENTER_Y;
 	boolean enableKeyBoard = false, dongbang = false, dongbangBreak = false, loadDriver = false;
 	int cuongdo, countvn30 = 0, tontaiHD = 0, codinhY, codinhX, count1 = 0, count2 = 0, mx, my, mx1 = 215, my1 = 281,
-			widthleft1 = 580, widthriht1 = 740, widthleft2 = 2, widthriht2 = 680, widthleft3 = 2, widthriht3 = 680;
+			widthleft1 = 580, widthriht1 = 740, widthleft2 = 2, widthriht2 = 680, heightL = 600, heightR = 600;
 	WebElement hdchuaK, Igia, hdkhop, stype, time, status, Igiadat, modal_price, MuaButton, ButtonATO, ButtonATC,
 			BanButton, BanButtonATC, vn30, vn30New, connect;
 	String gia, giadat;
@@ -344,7 +346,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	JLabel conn = new JLabel("conn");
 	private JTextField txtCL_TREN;
 	private final JButton Refresh = new JButton("");
-
+	JLabel lblCheck = new JLabel("Check");
 	JButton btnDong = new JButton("CL");
 	JLabel lblinfo = new JLabel("info");
 	JButton btnClear = new JButton("clear");
@@ -361,8 +363,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 	private final JPanel panel = new JPanel();
 	private final JTable tableHistory = new JTable();
-	final DefaultTableModel tableModel = (DefaultTableModel) tableHistory
-			.getModel();
+	final DefaultTableModel tableModel = (DefaultTableModel) tableHistory.getModel();
 	private final JScrollPane scrollPaneHistory = new JScrollPane();
 	private final JLabel lblShow = new JLabel("lblShow");
 
@@ -388,11 +389,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							MYFORM window = new MYFORM();
 
 							try {
+								 
+							
 								GlobalScreen.registerNativeHook();
 								GlobalScreen.addNativeKeyListener(window);
 								GlobalScreen.addNativeMouseMotionListener(window);
 								GlobalScreen.addNativeMouseWheelListener(window);
 								window.frmRubbyMoney.setVisible(true);
+								
 							} catch (NativeHookException e) {
 
 								e.printStackTrace();
@@ -438,7 +442,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	private void initialize() {
 
 		frmRubbyMoney = new JFrame();
-
+	
 		frmRubbyMoney.getContentPane().addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				driverStock.switchTo().defaultContent();
@@ -499,34 +503,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 					}
 
 				}
-				if (typeChart == 3) {
-					WebElement left = driverStock.findElement(By.xpath("//*[@id=\"Mleft\"]"));
 
-					WebElement right = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
-					if (steps == 1) {
-						if (widthleft3 <= 680 && widthriht2 > 51) {
-
-							widthleft3 = widthleft3 + 50;
-							widthriht3 = widthriht3 - 50;
-
-							jss.executeScript("arguments[0].style.width = '" + String.valueOf(widthleft3) + "px'",
-									left);
-							jss.executeScript("arguments[0].style.width = '" + String.valueOf(widthriht3) + "px'",
-									right);
-
-						}
-					} else {
-						if (widthleft3 >= 51 && widthriht3 < 680) {
-							widthleft3 = widthleft3 - 50;
-							widthriht3 = widthriht3 + 50;
-
-							jss.executeScript("arguments[0].style.width = '" + String.valueOf(widthleft3) + "px'",
-									left);
-							jss.executeScript("arguments[0].style.width = '" + String.valueOf(widthriht3) + "px'",
-									right);
-						}
-					}
-				}
 			}
 		});
 
@@ -562,7 +539,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 					br = new BufferedReader(new FileReader(file));
 					HDmonth = br.readLine();
 					System.out.println("HDmonth :" + HDmonth);
-
+		
 					comboBox.setSelectedItem(HDmonth);
 					SHD.setText("1");
 					br.close();
@@ -592,14 +569,13 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		frmRubbyMoney.getContentPane().add(panel);
 
 		panel.setLayout(null);
-		
+
 		colunm_HeadHistory.addElement("Khop");
 		colunm_HeadHistory.addElement("Type");
 		colunm_HeadHistory.addElement("Status");
 		colunm_HeadHistory.addElement("Price");
 		colunm_HeadHistory.addElement("ChuaK");
 		colunm_HeadHistory.addElement("Time");
-
 
 		tglbtnShowHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -673,7 +649,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 														+ ", rows : " + rowsNumber.size());
 											}
 
-										
 											SwingUtilities.invokeLater(new Runnable() {
 												public void run() {
 													tableHistory.setModel(new DefaultTableModel(total_recordHistory,
@@ -711,7 +686,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 										}
 										frmRubbyMoney.setTitle("history..." + ": " + staleElementReferenceException);
 
-									}catch(Exception eh) {
+									} catch (Exception eh) {
 										counterror = counterror + 1;
 										frmRubbyMoney.setTitle("counterror 2:" + counterror);
 										frmRubbyMoney.setTitle("history error..." + ": " + eh);
@@ -1074,8 +1049,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		});
 		btnMAK_MUA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			
 				if (enableKeyBoard) {
-
+					 Logger logger = Logger.getLogger(MYFORM.class);
+					  logger.warn("mua.");
 					try {
 						Order_special("M", "MTL");
 
@@ -1113,7 +1090,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnMAK_BAN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (enableKeyBoard) {
-
+					 Logger logger = Logger.getLogger(MYFORM.class);
+					  logger.warn("ban.");
+				
 					try {
 						Order_special("B", "MTL");
 						if (!tglbtnShowHistory.isSelected()) {
@@ -1794,6 +1773,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		txtCL_DUOI.setBackground(new Color(255, 239, 213));
 
 		txtBreak = new JTextField();
+		txtBreak.setEditable(false);
 		txtBreak.setBounds(162, 96, 30, 20);
 		panel.add(txtBreak);
 		txtBreak.addMouseWheelListener(new MouseWheelListener() {
@@ -2037,18 +2017,16 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				double steps = e.getWheelRotation();
 
 				if (steps == 1) {
-
-					typeChart = typeChart - 1;
-					if (typeChart < 1)
-						typeChart = 3;
+					if (TimeCheck == 5) {
+						TimeCheck = 1;
+					}
 				} else {
-
-					typeChart = typeChart + 1;
-					if (typeChart > 3)
-						typeChart = 1;
+					if (TimeCheck == 1) {
+						TimeCheck = 5;
+					}
 				}
 
-				btnType.setText(String.valueOf(typeChart));
+				btnType.setText(String.valueOf(TimeCheck));
 
 			}
 		});
@@ -2603,11 +2581,29 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		panel_info.add(lblSM);
 		lblSM.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSM.setForeground(Color.WHITE);
-		
-		JLabel lblCheck = new JLabel("Check");
+
 		lblCheck.setForeground(new Color(255, 255, 255));
 		lblCheck.setBounds(10, 234, 46, 14);
 		panel.add(lblCheck);
+
+		JButton btnF = new JButton("F");
+		btnF.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				driverStock.switchTo().defaultContent();
+
+				JavascriptExecutor jss = (JavascriptExecutor) driverStock;
+
+				WebElement left = driverStock.findElement(By.xpath("//*[@id=\"left\"]"));
+
+				WebElement right = driverStock.findElement(By.xpath("//*[@id=\"right\"]"));
+				jss.executeScript("arguments[0].style.height = '" + String.valueOf(600) + "px'", right);
+
+				jss.executeScript("arguments[0].style.height = '" + String.valueOf(600) + "px'", left);
+			}
+		});
+		btnF.setBounds(29, 131, 47, 23);
+		panel.add(btnF);
 		btnNewButton_4_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -2749,9 +2745,28 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						driverStock.switchTo().defaultContent();
 
 						try {
-							setupChart("iframe_left", 0, typeColor);
-							Thread.sleep(200);
-							setupChart("iframe_right", 0, typeColor);
+							JavascriptExecutor jss = (JavascriptExecutor) driverStock;
+
+							WebElement left = driverStock.findElement(By.xpath("//*[@id=\"left\"]"));
+
+							WebElement right = driverStock.findElement(By.xpath("//*[@id=\"right\"]"));
+							jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightL - 300) + "px'",
+									left);
+							jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightR - 400) + "px'",
+									right);
+
+							jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightL - 300) + "px'",
+									left);
+							jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightR - 400) + "px'",
+									left);
+							if (CheckOK()) {
+
+								setupChart("iframe_left", 0, typeColor);
+								Thread.sleep(200);
+								setupChart("iframe_right", 0, typeColor);
+							} else {
+								lblCheck.setText("Refresh");
+							}
 							// Thread.sleep(300);
 							// setupChart("iframe_bottom", 0, typeColor);
 						} catch (InterruptedException e) {
@@ -2780,7 +2795,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 						driverStock = new ChromeDriver();
 
-						driverStock.get("file:///C:/jar/index.html");
+						driverStock.get("file:///E:/ps/src/main/resources/index.html");
 						org.openqa.selenium.Dimension n = new org.openqa.selenium.Dimension(1590, 700);
 						driverStock.manage().window().setSize(n);
 						;
@@ -2921,7 +2936,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									retryNeeded1 = false;
 									frmRubbyMoney.setTitle(">>> Loading vps .. ");
 								} catch (NoSuchElementException e) {
-									
+
 									frmRubbyMoney.setTitle(">>> Loading vps ....  ");
 									retryNeeded1 = true;
 								}
@@ -3097,7 +3112,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											}
 											conn.setText(connect.getText());
 										} catch (NoSuchElementException e1) {
-											
+
 											e1.printStackTrace();
 										}
 										// -----------
@@ -3116,15 +3131,15 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 											if (Mua.isEmpty() && !Ban.isEmpty()) {
 												Mua = Ban;
-												
+
 												lblCheck.setText("mua empty");
-												
+
 											}
 											if (Ban.isEmpty() && !Mua.isEmpty()) {
 												Ban = Mua;
 											}
-											lblCheck.setText("out ok");
-											
+											lblCheck.setText("out ok..");
+
 											/*
 											 * System.out.println("Gia_khop : "+Gia_khop.getText());
 											 * System.out.println("-----"); System.out.println("Mua_1806 : "+Mua);
@@ -3163,40 +3178,35 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 											}
 
-										
+											info = driverVPS.findElement(By.xpath("//*[@id=\"unrelizeVMAccInfo\"]"));
 
-												info = driverVPS
-														.findElement(By.xpath("//*[@id=\"unrelizeVMAccInfo\"]"));
+											lblinfo.setText(info.getText());
 
-												lblinfo.setText(info.getText());
+											hdk = driverVPS.findElement(
+													By.xpath("//*[@id=\"danhmuc_" + HDDay + HDmonth + "\"]/td[2]"));
 
-												hdk = driverVPS.findElement(
-														By.xpath("//*[@id=\"danhmuc_" + HDDay + HDmonth + "\"]/td[2]"));
-												
-												sm = driverVPS.findElement(By.xpath("//*[@id=\"sucmua-int\"]"));
-												
-												if (!hdk.getAttribute("style").isEmpty()) { // isBlank
+											sm = driverVPS.findElement(By.xpath("//*[@id=\"sucmua-int\"]"));
 
-													if (hdk.getAttribute("style").toString().substring(19, 20)
-															.compareTo("4") == 0) {
-														lblHDK.setForeground(Color.GREEN);
+											if (!hdk.getAttribute("style").isEmpty()) { // isBlank
 
-														tontaiHD = 2;
-													} else {
-														lblHDK.setForeground(Color.RED);
-														tontaiHD = 1;
+												if (hdk.getAttribute("style").toString().substring(19, 20)
+														.compareTo("4") == 0) {
+													lblHDK.setForeground(Color.GREEN);
 
-													}
-													lblHDK.setText("HD :" + hdk.getText());
+													tontaiHD = 2;
 												} else {
-													lblHDK.setText("HD :" + hdk.getText());
-													tontaiHD = 0;
+													lblHDK.setForeground(Color.RED);
+													tontaiHD = 1;
 
 												}
 												lblHDK.setText("HD :" + hdk.getText());
+											} else {
+												lblHDK.setText("HD :" + hdk.getText());
+												tontaiHD = 0;
 
-											
-
+											}
+											lblHDK.setText("HD :" + hdk.getText());
+											lblCheck.setText("out ok.....");
 											/*
 											 * if (hien_danhSach_lenh) { // js.executeScript( //
 											 * "document.getElementById('footerPanel').style.display='block';");
@@ -3204,8 +3214,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											 * } else { js.executeScript(
 											 * "document.getElementById('footerPanel').style.display='none';"); }
 											 */
-
-									
 
 											try {
 
@@ -3511,34 +3519,19 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											}
 
 										} catch (StaleElementReferenceException eStaleElementReferenceException) {
-											System.out.println("StaleElement ...");
-											
+											frmRubbyMoney.setTitle("main_StaleElement");
+
 											retryNeeded = true;
 
-										} 
+										} catch (Exception ex) {
+											frmRubbyMoney.setTitle("main_Error");
 
-									} while (retryNeeded);
-
-									if (!dn) {
-
-										Mua_1806 = driverVPS.findElement(By.id(HD));
-										Ban_1806 = driverVPS.findElement(By.id(HD1));
-										Gia_khop = driverVPS.findElement(By.id(HDCLOSE));
-										// BAN---[1]---------------------------------------------------------------------------
-										if ((GIA_KHOP - GIA_MUA_REAL <= -1) && (GIA_KHOP - GIA_MUA_REAL > -2)) {
-											Itotal = ItotalTradeTemp - ItotalTrade;
-
-											dn = !dn;
-
-											js.executeScript("document.getElementById('sohopdong').value="
-													+ SHD.getText() + ";");
-
-											js.executeScript("document.getElementById('right_price').value="
-													+ df.format(GIA_KHOP) + ";");
+											retryNeeded = true;
 
 										}
 
-									}
+									} while (retryNeeded);
+
 									// ---------------
 
 								}
@@ -3549,15 +3542,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 						Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
 							public void uncaughtException(Thread thread, Throwable exception) {
 
-								// stop thread if still running
-								thread.interrupt();
+								// stop thread if still running thread.interrupt();
 
 								thread.start();
 							}
 						};
 
 						thread = new Thread(countDownThread);
-						dn = true;
+
 						thread.start();
 
 						thread.setUncaughtExceptionHandler(h);
@@ -3570,7 +3562,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								while (true) {
 
 									if (!thread.isAlive()) {
-										driverVPS.navigate().refresh();
+
 										thread = new Thread(countDownThread);
 										frmRubbyMoney.setTitle("restart thread");
 										thread.start();
@@ -3595,30 +3587,23 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnType.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				driverStock.switchTo().defaultContent();
-				JavascriptExecutor jss = (JavascriptExecutor) driverStock;
-				typeChart = typeChart + 1;
-				if (typeChart > 3)
-					typeChart = 1;
-				if (typeChart == 1) {
+				String Str_1Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[1]/div/div[1]";
+				String Str_5Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[2]/div/div[1]";
 
-					WebElement parent = driverStock.findElement(By.xpath("//*[@id=\"parent\"]"));
-					jss.executeScript("arguments[0].scrollIntoView();", parent);
-				}
-				/*
-				 * if (typeChart == 2) {
-				 * 
-				 * WebElement cRight = driverStock.findElement(By.xpath("//*[@id=\"Cright\"]"));
-				 * jss.executeScript("arguments[0].scrollIntoView();", cRight);
-				 * 
-				 * }
-				 */
+				if (TimeCheck == 1) {
 
-				if (typeChart == 3) {
-					WebElement MRight = driverStock.findElement(By.xpath("//*[@id=\"Mright\"]"));
-					jss.executeScript("arguments[0].scrollIntoView();", MRight);
+					driverStock.switchTo().defaultContent();
+					driverStock.switchTo().frame("iframe_right");
+					driverStock.switchTo().frame(0);
+					driverStock.findElement(By.id("header-toolbar-intervals")).click();
+
 				}
-				btnType.setText(String.valueOf(typeChart));
+				if (TimeCheck == 5) {
+					driverStock.switchTo().defaultContent();
+					driverStock.switchTo().frame("iframe_right");
+					driverStock.switchTo().frame(0);
+					driverStock.findElement(By.id("header-toolbar-intervals")).click();
+				}
 
 			}
 		});
@@ -3670,9 +3655,11 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 									newRecordStock = new Vector();
 
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-0\"]/span"))
-											.getText());
+									// newRecordStock.addElement(DriverStockList
+									// .findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-0\"]/span"))
+									// .getText());
+
+									newRecordStock.addElement(StockList.get(i));
 
 									newRecordStock.addElement(DriverStockList
 											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-8\"]"))
@@ -3693,7 +3680,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									newRecordStock.addElement(DriverStockList
 											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-12\"]"))
 											.getText());
-									newRecordStock.addElement("x");
+									// newRecordStock.addElement("x");
 
 									total_recordStock.addElement(newRecordStock);
 
@@ -3828,7 +3815,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		lblinfo.setForeground(Color.BLACK);
 		M1 = 1.5;
-	
+
 	}
 
 	public void ActionMua() throws AWTException {
@@ -4588,7 +4575,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 				}
 			} catch (NoSuchElementException e1) {
-				
+
 				e1.printStackTrace();
 			}
 
@@ -4625,10 +4612,20 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		}
 		if (e.getKeyCode() == NativeKeyEvent.VC_E && enableKeyBoard) {
-			btnAction.setForeground(Color.BLACK);
-			btnAction.setText("clear");
-			System.out.println("reset");
-			CountAction = 1;
+			int x = frmRubbyMoney.getLocation().x;
+			int y = frmRubbyMoney.getLocation().y;
+
+			PointerInfo a = MouseInfo.getPointerInfo();
+			Point b = a.getLocation();
+			int mx = (int) b.getX();
+			int my = (int) b.getY();
+			if ((mx >= x + 95) && (my >= y + 31)) {
+
+				btnAction.setForeground(Color.BLACK);
+				btnAction.setText("clear");
+				System.out.println("reset");
+				CountAction = 1;
+			}
 		}
 		if (e.getKeyCode() == NativeKeyEvent.VC_A && enableKeyBoard) { // DONG BANG A A
 			dongbang = !dongbang;
@@ -4943,14 +4940,70 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		}
 	}
 
-	private void setupChart(String F1, int F2, int typeColor) {
+	Boolean CheckOK() {
+		String StrInput = "/html/body/div[4]/div[2]/div[2]/div[1]/input";
 		String StrMACD = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[42]/div";
 		String StrRSI = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[60]/div";
 		String StrParabolSAR = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[53]/div";
 
 		String StrMAROSS = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[40]/div";
 
+		String StrClose = "/html/body/div[4]/div[3]";
+		String Str_1Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[1]/div/div[1]";
+		String Str_5Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[2]/div/div[1]";
+		Boolean Result = true;
+
+		try {
+			if (!driverStock.findElement(By.xpath(StrInput)).isDisplayed()) {
+				lblCheck.setText("StrInput");
+				Result = false;
+			}
+			;
+			if (!driverStock.findElement(By.xpath(StrMACD)).isDisplayed()) {
+				lblCheck.setText("StrMACD");
+				Result = false;
+			}
+			;
+			if (!driverStock.findElement(By.xpath(StrRSI)).isDisplayed()) {
+				lblCheck.setText("StrRSI");
+				Result = false;
+			}
+			;
+			if (!driverStock.findElement(By.xpath(StrMAROSS)).isDisplayed()) {
+				lblCheck.setText("StrMAROSS");
+				Result = false;
+			}
+			;
+			if (!driverStock.findElement(By.xpath(StrClose)).isDisplayed()) {
+				lblCheck.setText("StrClose");
+				Result = false;
+			}
+		} catch (NoSuchElementException e) {
+			lblCheck.setText("NoElement");
+			driverStock.navigate().refresh();
+			JavascriptExecutor jss = (JavascriptExecutor) driverStock;
+
+			WebElement left = driverStock.findElement(By.xpath("//*[@id=\"left\"]"));
+
+			WebElement right = driverStock.findElement(By.xpath("//*[@id=\"right\"]"));
+			jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightL - 300) + "px'", left);
+			jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightR - 300) + "px'", right);
+
+			jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightL - 300) + "px'", left);
+			jss.executeScript("arguments[0].style.height = '" + String.valueOf(heightR - 300) + "px'", left);
+		}
+
+		return Result;
+	}
+
+	private void setupChart(String F1, int F2, int typeColor) {
 		String StrInput = "/html/body/div[4]/div[2]/div[2]/div[1]/input";
+		String StrMACD = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[42]/div";
+		String StrRSI = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[60]/div";
+		String StrParabolSAR = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[53]/div";
+
+		String StrMAROSS = "/html/body/div[4]/div[2]/div[2]/div[2]/div[1]/div/div/div[40]/div";
+
 		String StrClose = "/html/body/div[4]/div[3]";
 		String Str_1Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[1]/div/div[1]";
 		String Str_5Minute = "//*[@id=\"__outside-render-0\"]/div/div/div/div/div/div/div[2]/div/div[1]";
@@ -5130,7 +5183,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				try {
 					frmRubbyMoney.setTitle("Document is loading");
 				} catch (Exception e) {
-					
+
 					e.printStackTrace();
 				}
 			return isPageLoaded;
