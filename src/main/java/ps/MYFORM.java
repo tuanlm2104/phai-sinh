@@ -2609,24 +2609,26 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			public void mouseClicked(MouseEvent arg0) {
 				Runnable runnable = new Runnable() {
 					public void run() {
+						
 						StockList = new Vector();
 
 						colunm_HeadStock = new Vector();
 						colunm_HeadStock.addElement("ten");
-						colunm_HeadStock.addElement("gia_HT");
-						colunm_HeadStock.addElement("thay_d");
+						colunm_HeadStock.addElement("gia");
+						colunm_HeadStock.addElement("ch");
 						colunm_HeadStock.addElement("%");
 						colunm_HeadStock.addElement("gia_m");
 						colunm_HeadStock.addElement("kl_m");
 						colunm_HeadStock.addElement("gia_b");
-						colunm_HeadStock.addElement("c");
+						colunm_HeadStock.addElement("kl_b");
+						frmRubbyMoney.setTitle("start loading list");
 						File file = new File("E:\\mystock.txt");
 						System.setProperty("webdriver.chrome.driver", "C://drivers//chromedriver.exe");
 						ChromeOptions chromeOptionList = new ChromeOptions();
 						chromeOptionList.setHeadless(HeadLess);
 						DriverStockList = new ChromeDriver(chromeOptionList);
 						DriverStockList.get("https://iboard.ssi.com.vn/");
-						frmRubbyMoney.setTitle("Clicked ...");
+						frmRubbyMoney.setTitle("start loading list....");
 						Actions action = new Actions(DriverStockList);
 						WebElement we = DriverStockList.findElement(By
 								.xpath("//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[1]/ul/li[1]/div/span"));
@@ -3646,58 +3648,35 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							System.out.println("");
 							while (showlist) {
 								final Vector total_recordStock = new Vector();
+								String StrB = "//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div[";
 								Vector newRecordStock = null;
 								tableHistory.setDefaultRenderer(Object.class, new StockListRenderer());
 								for (int i = 0; i < StockList.size(); i++) {
 
 									newRecordStock = new Vector();
 
-									// newRecordStock.addElement(DriverStockList
-									// .findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-0\"]/span"))
-									// .getText());
-									/*
-									 * newRecordStock.addElement(StockList.get(i));
-									 * 
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-8\"]")) .getText());
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-7\"]")) .getText());
-									 * frmRubbyMoney.setTitle(">>Update list.");
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-5\"]")) .getText());
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-6\"]")) .getText());
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-11\"]")) .getText());
-									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
-									 * + StockList.get(i) + "-12\"]")) .getText()); //
-									 * newRecordStock.addElement("x");
-									 */
 									newRecordStock.addElement(StockList.get(i));
 
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[11]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[11]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[13]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[13]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[14]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[14]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[9]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[9]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[10]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[10]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
-											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
-													+ String.valueOf(i + 1) + "]/div[17]"))
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[17]"))
+											.getText());
+									newRecordStock.addElement(DriverStockList
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[18]"))
 											.getText());
 
 									total_recordStock.addElement(newRecordStock);
@@ -3716,9 +3695,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 										System.out.println(">>update stock list>>");
 										TableColumnModel model = tableHistory.getColumnModel();
-										if (model.getColumnCount() > 1) {
-											model.removeColumn(model.getColumn(7));
-										}
+									//	if (model.getColumnCount() > 1) {
+									//		model.removeColumn(model.getColumn(7));
+									//	}
 
 										tableModel.fireTableDataChanged();
 										frmRubbyMoney.setTitle(">>Update list...");
@@ -3846,7 +3825,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				colunm_HeadStock.addElement("gia_m");
 				colunm_HeadStock.addElement("kl_m");
 				colunm_HeadStock.addElement("gia_b");
-				colunm_HeadStock.addElement("c");
+				colunm_HeadStock.addElement("kl_b");
 				File file = new File("E:\\mystock.txt");
 				System.setProperty("webdriver.chrome.driver", "C://drivers//chromedriver.exe");
 				ChromeOptions chromeOptionList = new ChromeOptions();
@@ -5002,10 +4981,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 				c.setForeground(Color.RED);
 
 			} else {
-				if (Double.valueOf(obj.toString()) == 0 ) {
+				if (Double.valueOf(obj.toString()) == 0) {
 					c.setForeground(Color.YELLOW);
 				} else {
-					if (Double.valueOf(obj.toString()) >0 ) {
+					if (Double.valueOf(obj.toString()) > 0) {
 						c.setForeground(Color.GREEN);
 					}
 				}
