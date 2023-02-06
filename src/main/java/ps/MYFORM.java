@@ -128,6 +128,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -389,14 +390,13 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							MYFORM window = new MYFORM();
 
 							try {
-								 
-							
+
 								GlobalScreen.registerNativeHook();
 								GlobalScreen.addNativeKeyListener(window);
 								GlobalScreen.addNativeMouseMotionListener(window);
 								GlobalScreen.addNativeMouseWheelListener(window);
 								window.frmRubbyMoney.setVisible(true);
-								
+
 							} catch (NativeHookException e) {
 
 								e.printStackTrace();
@@ -442,7 +442,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	private void initialize() {
 
 		frmRubbyMoney = new JFrame();
-	
+
 		frmRubbyMoney.getContentPane().addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				driverStock.switchTo().defaultContent();
@@ -539,7 +539,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 					br = new BufferedReader(new FileReader(file));
 					HDmonth = br.readLine();
 					System.out.println("HDmonth :" + HDmonth);
-		
+
 					comboBox.setSelectedItem(HDmonth);
 					SHD.setText("1");
 					br.close();
@@ -554,7 +554,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		frmRubbyMoney.getContentPane().setBackground(Color.BLACK);
 		frmRubbyMoney.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\jar\\ruby2.jpg"));
-		frmRubbyMoney.setBounds(100, 100, 503, 293);
+		frmRubbyMoney.setBounds(100, 100, 503, 329);
 		frmRubbyMoney.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmRubbyMoney.getContentPane().setLayout(null);
 		final String title = "";
@@ -1049,10 +1049,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		});
 		btnMAK_MUA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
+
 				if (enableKeyBoard) {
-					 Logger logger = Logger.getLogger(MYFORM.class);
-					  logger.warn("mua.");
+					Logger logger = Logger.getLogger(MYFORM.class);
+					logger.warn("mua.");
 					try {
 						Order_special("M", "MTL");
 
@@ -1090,9 +1090,9 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		btnMAK_BAN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (enableKeyBoard) {
-					 Logger logger = Logger.getLogger(MYFORM.class);
-					  logger.warn("ban.");
-				
+					Logger logger = Logger.getLogger(MYFORM.class);
+					logger.warn("ban.");
+
 					try {
 						Order_special("B", "MTL");
 						if (!tglbtnShowHistory.isSelected()) {
@@ -2609,61 +2609,58 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			public void mouseClicked(MouseEvent arg0) {
 				Runnable runnable = new Runnable() {
 					public void run() {
+						StockList = new Vector();
+
+						colunm_HeadStock = new Vector();
+						colunm_HeadStock.addElement("ten");
+						colunm_HeadStock.addElement("gia_HT");
+						colunm_HeadStock.addElement("thay_d");
+						colunm_HeadStock.addElement("%");
+						colunm_HeadStock.addElement("gia_m");
+						colunm_HeadStock.addElement("kl_m");
+						colunm_HeadStock.addElement("gia_b");
+						colunm_HeadStock.addElement("c");
+						File file = new File("E:\\mystock.txt");
 						System.setProperty("webdriver.chrome.driver", "C://drivers//chromedriver.exe");
 						ChromeOptions chromeOptionList = new ChromeOptions();
 						chromeOptionList.setHeadless(HeadLess);
 						DriverStockList = new ChromeDriver(chromeOptionList);
-						DriverStockList.get("http://stockboard.sbsc.com.vn/apps/StockBoard/SBSC/ALL.html");
+						DriverStockList.get("https://iboard.ssi.com.vn/");
 						frmRubbyMoney.setTitle("Clicked ...");
-						// ----------
-
-						// ----------
-
-						try {
-							Thread.sleep(3000);
-							if (DriverStockList.findElement(By.xpath("//*[@id=\"favourite-name\"]")).isDisplayed()) {
-								frmRubbyMoney.setTitle("loading ...OK");
-							}
-
-						} catch (InterruptedException e1) {
-
-							e1.printStackTrace();
-						}
-						colunm_HeadStock = new Vector();
-						File file = new File("E:\\mystock.txt");
-						StockList = new Vector();
+						Actions action = new Actions(DriverStockList);
+						WebElement we = DriverStockList.findElement(By
+								.xpath("//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[1]/ul/li[1]/div/span"));
+						action.moveToElement(we).build().perform();
 
 						BufferedReader br;
-
-						colunm_HeadStock.addElement("ten");
-						colunm_HeadStock.addElement("gia_HT");
-						colunm_HeadStock.addElement("thay_d");
-						colunm_HeadStock.addElement("gia_m");
-						colunm_HeadStock.addElement("kl_m");
-						colunm_HeadStock.addElement("gia_b");
-						colunm_HeadStock.addElement("kl_b");
-						colunm_HeadStock.addElement("c");
+						String ma;
+						if (DriverStockList.findElement(By.xpath(
+								"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+								.isDisplayed()) {
+							DriverStockList.findElement(By.xpath(
+									"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+									.sendKeys("TUAN");
+							DriverStockList.findElement(By.xpath(
+									"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+									.sendKeys(Keys.ENTER);
+						}
 
 						try {
-
 							br = new BufferedReader(new FileReader(file));
-							String ma;
+
 							while ((ma = br.readLine()) != null && !ma.isEmpty()) {
 								frmRubbyMoney.setTitle("input : " + ma);
-								if (DriverStockList.findElement(By.xpath("//*[@id=\"favourite-name\"]"))
-										.isDisplayed()) {
-									DriverStockList.findElement(By.xpath("//*[@id=\"favourite-name\"]")).sendKeys(ma);
-									DriverStockList.findElement(By.xpath("//*[@id=\"favourite-name\"]"))
-											.sendKeys(Keys.ENTER);
-									StockList.addElement(ma);
-
-								}
-
+								DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]")).sendKeys(ma);
+								DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]"))
+										.sendKeys(Keys.ENTER);
+								StockList.addElement(ma);
 							}
-							frmRubbyMoney.setTitle("List Ready...");
-						} catch (IOException e) {
+							frmRubbyMoney.setTitle("done ...");
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
 
-							e.printStackTrace();
 						}
 
 					}
@@ -3658,29 +3655,50 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									// newRecordStock.addElement(DriverStockList
 									// .findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-0\"]/span"))
 									// .getText());
-
+									/*
+									 * newRecordStock.addElement(StockList.get(i));
+									 * 
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-8\"]")) .getText());
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-7\"]")) .getText());
+									 * frmRubbyMoney.setTitle(">>Update list.");
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-5\"]")) .getText());
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-6\"]")) .getText());
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-11\"]")) .getText());
+									 * newRecordStock.addElement(DriverStockList .findElement(By.xpath("//*[@id=\""
+									 * + StockList.get(i) + "-12\"]")) .getText()); //
+									 * newRecordStock.addElement("x");
+									 */
 									newRecordStock.addElement(StockList.get(i));
 
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-8\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[11]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-7\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[13]"))
 											.getText());
-									frmRubbyMoney.setTitle(">>Update list.");
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-5\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[14]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-6\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[9]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-11\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[10]"))
 											.getText());
-									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath("//*[@id=\"" + StockList.get(i) + "-12\"]"))
+									newRecordStock.addElement(DriverStockList.findElement(By.xpath(
+											"//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div["
+													+ String.valueOf(i + 1) + "]/div[17]"))
 											.getText());
-									// newRecordStock.addElement("x");
 
 									total_recordStock.addElement(newRecordStock);
 
@@ -3814,6 +3832,67 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		lblinfo.setHorizontalAlignment(SwingConstants.CENTER);
 
 		lblinfo.setForeground(Color.BLACK);
+
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StockList = new Vector();
+
+				colunm_HeadStock = new Vector();
+				colunm_HeadStock.addElement("ten");
+				colunm_HeadStock.addElement("gia_HT");
+				colunm_HeadStock.addElement("thay_d");
+				colunm_HeadStock.addElement("%");
+				colunm_HeadStock.addElement("gia_m");
+				colunm_HeadStock.addElement("kl_m");
+				colunm_HeadStock.addElement("gia_b");
+				colunm_HeadStock.addElement("c");
+				File file = new File("E:\\mystock.txt");
+				System.setProperty("webdriver.chrome.driver", "C://drivers//chromedriver.exe");
+				ChromeOptions chromeOptionList = new ChromeOptions();
+				chromeOptionList.setHeadless(HeadLess);
+				DriverStockList = new ChromeDriver(chromeOptionList);
+				DriverStockList.get("https://iboard.ssi.com.vn/");
+				frmRubbyMoney.setTitle("Clicked ...");
+				Actions action = new Actions(DriverStockList);
+				WebElement we = DriverStockList.findElement(
+						By.xpath("//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[1]/ul/li[1]/div/span"));
+				action.moveToElement(we).build().perform();
+
+				BufferedReader br;
+				String ma;
+				if (DriverStockList.findElement(By.xpath(
+						"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+						.isDisplayed()) {
+					DriverStockList.findElement(By.xpath(
+							"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+							.sendKeys("TUAN");
+					DriverStockList.findElement(By.xpath(
+							"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
+							.sendKeys(Keys.ENTER);
+				}
+
+				try {
+					br = new BufferedReader(new FileReader(file));
+
+					while ((ma = br.readLine()) != null && !ma.isEmpty()) {
+						frmRubbyMoney.setTitle("input : " + ma);
+						DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]")).sendKeys(ma);
+						DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]")).sendKeys(Keys.ENTER);
+						StockList.addElement(ma);
+					}
+					frmRubbyMoney.setTitle("done ...");
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+
+				}
+
+			}
+		});
+		btnNewButton.setBounds(11, 264, 89, 23);
+		frmRubbyMoney.getContentPane().add(btnNewButton);
 		M1 = 1.5;
 
 	}
@@ -4580,7 +4659,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			}
 
 		} // if
-		if (e.getKeyCode() == NativeKeyEvent.VC_X) {
+		if (e.getKeyCode() == NativeKeyEvent.VC_ALT_R) {
 			enableKeyBoard = !enableKeyBoard;
 			if (enableKeyBoard) {
 				lblTB.setText("keyboard active");
@@ -4918,20 +4997,17 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-			Object obj = tableHistory.getModel().getValueAt(row, column);
-			if (obj.toString().substring(0, 1).equalsIgnoreCase("▲")) {
-				c.setForeground(Color.GREEN);
+			Object obj = tableHistory.getModel().getValueAt(row, 2);
+			if (Double.valueOf(obj.toString()) < 0) {
+				c.setForeground(Color.RED);
 
 			} else {
-				if (obj.toString().substring(0, 1).equalsIgnoreCase("▼")) {
-					c.setForeground(Color.RED);
+				if (Double.valueOf(obj.toString()) == 0 ) {
+					c.setForeground(Color.YELLOW);
 				} else {
-					if (obj.toString().substring(0, 1).equalsIgnoreCase("■")) {
-						c.setForeground(Color.YELLOW);
-					} else {
-						c.setForeground(Color.WHITE);
+					if (Double.valueOf(obj.toString()) >0 ) {
+						c.setForeground(Color.GREEN);
 					}
-
 				}
 			}
 			c.setFont(new Font("Helvetica Bold", Font.PLAIN, 9));
