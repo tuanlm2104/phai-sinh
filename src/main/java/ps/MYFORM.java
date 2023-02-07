@@ -192,7 +192,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	String[] lenhhistory1;
 	String[] lenhhistory2;
 	String[] lenhhistory3;
-
+	String showrun="";
 	Thread threadstock, threadinfo;
 	@SuppressWarnings("rawtypes")
 	Vector colunm_HeadStock, StockList;
@@ -232,7 +232,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 	JRadioButton CL_M_TREN = new JRadioButton("M");
 	JRadioButton CL_B_TREN = new JRadioButton("B");
 	JRadioButton CL_N_TREN = new JRadioButton("");
-	// ---------------------------------------------
 	JRadioButton CL_N_DUOI = new JRadioButton("");
 	JRadioButton CL_B_DUOI = new JRadioButton("B");
 	JRadioButton CL_M_DUOI = new JRadioButton("M");
@@ -554,7 +553,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		frmRubbyMoney.getContentPane().setBackground(Color.BLACK);
 		frmRubbyMoney.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\jar\\ruby2.jpg"));
-		frmRubbyMoney.setBounds(100, 100, 503, 329);
+		frmRubbyMoney.setBounds(100, 100, 503, 288);
 		frmRubbyMoney.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmRubbyMoney.getContentPane().setLayout(null);
 		final String title = "";
@@ -3626,7 +3625,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 		tglbtnShowList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+			
 				Runnable runnable = new Runnable() {
 					@SuppressWarnings("deprecation")
 					public void run() {
@@ -3638,6 +3637,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 							}
 						}
 						if (showlist) {
+							
 							tglbtnShowList.setSelected(true);
 
 							hien_danhSach_lenh = false;
@@ -3645,13 +3645,14 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 							// -----------------------------
 
-							System.out.println("");
+						
 							while (showlist) {
+							
 								final Vector total_recordStock = new Vector();
 								String StrB = "//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div[";
 								Vector newRecordStock = null;
 								tableHistory.setDefaultRenderer(Object.class, new StockListRenderer());
-								frmRubbyMoney.setTitle(">>Update list");
+								
 								for (int i = 0; i < StockList.size(); i++) {
 
 									newRecordStock = new Vector();
@@ -3683,29 +3684,26 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 									total_recordStock.addElement(newRecordStock);
 
 								}
+							
 								final DefaultTableModel tableModel = (DefaultTableModel) tableHistory.getModel();
 
 								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {
-
+										frmRubbyMoney.setTitle(".....");
 										tableHistory
 												.setModel(new DefaultTableModel(total_recordStock, colunm_HeadStock));
-										// tableHistory.getColumnModel().getColumn(7).setPreferredWidth(0);
 
-										tableModel.fireTableDataChanged();
-
-										
+										tableModel.fireTableDataChanged();										
 										TableColumnModel model = tableHistory.getColumnModel();
-									//	if (model.getColumnCount() > 1) {
-									//		model.removeColumn(model.getColumn(7));
-									//	}
 
 										tableModel.fireTableDataChanged();
-										frmRubbyMoney.setTitle(">>Update list...");
+										
+									
 									}
 
 								}); // luong
-
+						
+								
 								// ban
 							}
 
@@ -3812,67 +3810,6 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		lblinfo.setHorizontalAlignment(SwingConstants.CENTER);
 
 		lblinfo.setForeground(Color.BLACK);
-
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				StockList = new Vector();
-
-				colunm_HeadStock = new Vector();
-				colunm_HeadStock.addElement("ten");
-				colunm_HeadStock.addElement("gia_HT");
-				colunm_HeadStock.addElement("thay_d");
-				colunm_HeadStock.addElement("%");
-				colunm_HeadStock.addElement("gia_m");
-				colunm_HeadStock.addElement("kl_m");
-				colunm_HeadStock.addElement("gia_b");
-				colunm_HeadStock.addElement("kl_b");
-				File file = new File("E:\\mystock.txt");
-				System.setProperty("webdriver.chrome.driver", "C://drivers//chromedriver.exe");
-				ChromeOptions chromeOptionList = new ChromeOptions();
-				chromeOptionList.setHeadless(HeadLess);
-				DriverStockList = new ChromeDriver(chromeOptionList);
-				DriverStockList.get("https://iboard.ssi.com.vn/");
-				frmRubbyMoney.setTitle("Clicked ...");
-				Actions action = new Actions(DriverStockList);
-				WebElement we = DriverStockList.findElement(
-						By.xpath("//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[1]/ul/li[1]/div/span"));
-				action.moveToElement(we).build().perform();
-
-				BufferedReader br;
-				String ma;
-				if (DriverStockList.findElement(By.xpath(
-						"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
-						.isDisplayed()) {
-					DriverStockList.findElement(By.xpath(
-							"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
-							.sendKeys("TUAN");
-					DriverStockList.findElement(By.xpath(
-							"/html[1]/body[1]/div[3]/div[1]/div[1]/ul[1]/div[1]/form[1]/div[1]/div[1]/div[1]/input[1]"))
-							.sendKeys(Keys.ENTER);
-				}
-
-				try {
-					br = new BufferedReader(new FileReader(file));
-
-					while ((ma = br.readLine()) != null && !ma.isEmpty()) {
-						frmRubbyMoney.setTitle("input : " + ma);
-						DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]")).sendKeys(ma);
-						DriverStockList.findElement(By.xpath("//*[@id=\"downshift-0-input\"]")).sendKeys(Keys.ENTER);
-						StockList.addElement(ma);
-					}
-					frmRubbyMoney.setTitle("done ...");
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-
-				}
-
-			}
-		});
-		btnNewButton.setBounds(11, 264, 89, 23);
-		frmRubbyMoney.getContentPane().add(btnNewButton);
 		M1 = 1.5;
 
 	}
@@ -4988,8 +4925,8 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			//tColumn3.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
 			tColumn4.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
 			tColumn5.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
-			tColumn6.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
-			tColumn7.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));  
+			tColumn6.setCellRenderer(new ColumnColorRenderer(new Color(105,105,105), Color.WHITE));
+			tColumn7.setCellRenderer(new ColumnColorRenderer(new Color(105,105,105), Color.WHITE));  
 			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 			Object obj = tableHistory.getModel().getValueAt(row, 2);
