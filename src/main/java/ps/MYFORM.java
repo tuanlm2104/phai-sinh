@@ -2476,7 +2476,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		comboBox.setModel(new DefaultComboBoxModel(
 				new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
 		tableHistory.setFillsViewportHeight(true);
-		tableHistory.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		tableHistory.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		scrollPaneHistory.setBounds(83, 145, 309, 74);
 		panel.add(scrollPaneHistory);
 		scrollPaneHistory.setViewportView(tableHistory);
@@ -3651,6 +3651,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 								String StrB = "//*[@id=\"main-wrapper\"]/div[1]/section[2]/div[2]/div[2]/div/div/div/div[1]/div[2]/div[3]/div[2]/div/div/div[";
 								Vector newRecordStock = null;
 								tableHistory.setDefaultRenderer(Object.class, new StockListRenderer());
+								frmRubbyMoney.setTitle(">>Update list");
 								for (int i = 0; i < StockList.size(); i++) {
 
 									newRecordStock = new Vector();
@@ -3673,10 +3674,10 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[10]"))
 											.getText());
 									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[17]"))
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[15]"))
 											.getText());
 									newRecordStock.addElement(DriverStockList
-											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[18]"))
+											.findElement(By.xpath(StrB + String.valueOf(i + 1) + "]/div[16]"))
 											.getText());
 
 									total_recordStock.addElement(newRecordStock);
@@ -3693,7 +3694,7 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 
 										tableModel.fireTableDataChanged();
 
-										System.out.println(">>update stock list>>");
+										
 										TableColumnModel model = tableHistory.getColumnModel();
 									//	if (model.getColumnCount() > 1) {
 									//		model.removeColumn(model.getColumn(7));
@@ -4973,7 +4974,22 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-
+			final TableColumn tColumn1,tColumn2,tColumn3,tColumn4,tColumn5,tColumn6,tColumn7;
+			tColumn1 = tableHistory.getColumnModel().getColumn(1);
+			tColumn2 = tableHistory.getColumnModel().getColumn(2);
+			tColumn3 = tableHistory.getColumnModel().getColumn(3);
+			tColumn4 = tableHistory.getColumnModel().getColumn(4);
+			tColumn5 = tableHistory.getColumnModel().getColumn(5);
+			tColumn6 = tableHistory.getColumnModel().getColumn(6);
+			tColumn7 = tableHistory.getColumnModel().getColumn(7);
+			
+			tColumn1.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			tColumn2.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			//tColumn3.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			tColumn4.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			tColumn5.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			tColumn6.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));
+			tColumn7.setCellRenderer(new ColumnColorRenderer(Color.BLACK, Color.WHITE));  
 			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 			Object obj = tableHistory.getModel().getValueAt(row, 2);
@@ -5244,4 +5260,22 @@ public class MYFORM implements NativeKeyListener, NativeMouseMotionListener, Nat
 			return isPageLoaded;
 		}, i);
 	}
+	class ColumnColorRenderer extends DefaultTableCellRenderer {
+		   /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		Color backgroundColor, foregroundColor;
+		   public ColumnColorRenderer(Color backgroundColor, Color foregroundColor) {
+		      super();
+		      this.backgroundColor = backgroundColor;
+		      this.foregroundColor = foregroundColor;
+		   }
+		   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,   boolean hasFocus, int row, int column) {
+		      Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		      cell.setBackground(backgroundColor);
+		      cell.setForeground(foregroundColor);
+		      return cell;
+		   }
+		}
 }
